@@ -14,13 +14,6 @@ function ui_build(job)
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
-
-    $("#newobjectbutton").click(function() {
-        if (!mturk_submitallowed())
-        {
-            $("#turkic_acceptfirst").effect("pulsate");
-        }
-    });
 }
 
 function ui_setup(job)
@@ -43,7 +36,6 @@ function ui_setup(job)
                 primary: "ui-icon-wrench"
             }
         }).appendTo($("#advancedoptions").parent()).click(function() {
-                eventlog("options", "Show advanced options");
                 $(this).remove();
                 $("#advancedoptions").show();
             });
@@ -59,15 +51,6 @@ function ui_setupbuttons(job, player, tracks)
         if (!$(this).button("option", "disabled"))
         {
             player.toggle();
-
-            if (player.paused)
-            {
-                eventlog("playpause", "Paused video");
-            }
-            else
-            {
-                eventlog("playpause", "Play video");
-            }
         }
     }).button({
         disabled: false,
@@ -80,7 +63,6 @@ function ui_setupbuttons(job, player, tracks)
         if (ui_disabled) return;
         player.pause();
         player.seek(player.job.start);
-        eventlog("rewind", "Rewind to start");
     }).button({
         disabled: true,
         icons: {
@@ -137,35 +119,16 @@ function ui_setupbuttons(job, player, tracks)
             player.pause();
             player.play();
         }
-        eventlog("speedcontrol", "FPS = " + player.fps + " and delta = " + player.playdelta);
     });
 
     $("#annotateoptionsresize").button().click(function() {
         var resizable = $(this).attr("checked") ? false : true;
         tracks.resizable(resizable);
-
-        if (resizable)
-        {
-            eventlog("disableresize", "Objects can be resized");
-        }
-        else
-        {
-            eventlog("disableresize", "Objects can not be resized");
-        }
     });
 
     $("#annotateoptionshideboxes").button().click(function() {
         var visible = !$(this).attr("checked");
         tracks.visible(visible);
-
-        if (visible)
-        {
-            eventlog("hideboxes", "Boxes are visible");
-        }
-        else
-        {
-            eventlog("hideboxes", "Boxes are invisible");
-        }
     });
 
     $("#annotateoptionshideboxtext").button().click(function() {
@@ -194,7 +157,6 @@ function ui_setupkeyboardshortcuts(job, player)
         }
 
         var keycode = e.keyCode ? e.keyCode : e.which;
-        eventlog("keyboard", "Key press: " + keycode);
         
         if (keycode == 32 || keycode == 112 || keycode == 116 || keycode == 98)
         {
@@ -265,8 +227,6 @@ function ui_setupslider(player)
         slide: function(event, ui) {
             player.pause();
             player.seek(ui.value);
-            // probably too much bandwidth
-            //eventlog("slider", "Seek to " + ui.value);
         }
     });
 
@@ -344,12 +304,6 @@ function ui_setupclickskip(job, player, tracks, objectui)
 
 function ui_loadprevious(job, objectui)
 {
-    var overlay = $('<div id="turkic_overlay"></div>').appendTo("#container");
-    var note = $("<div id='submitdialog'>One moment...</div>").appendTo("#container");
-
-    overlay.remove();
-    note.remove();
-
     for (var i in job.data) {
             objectui.injectnewobject(data[i]["label"],
                                      data[i]["boxes"],
@@ -371,129 +325,9 @@ function ui_setupsubmit(job, tracks)
 
 function ui_submit(job, tracks)
 {
-    console.dir(tracks);
-    console.log("Start submit - status: " + tracks.serialize());
-
-    if (!mturk_submitallowed())
-    {
-        alert("Please accept the task before you submit.");
-        return;
-    }
-
-    var overlay = $('<div id="turkic_overlay"></div>').appendTo("#container");
-    ui_disable();
-
-    var note = $("<div id='submitdialog'></div>").appendTo("#container");
-
-    function validatejob(callback)
-    {
-        server_post("validatejob", [job.jobid], tracks.serialize(),
-            function(valid) {
-                if (valid)
-                {
-                    console.log("Validation was successful");
-                    callback();
-                }
-                else
-                {
-                    note.remove();
-                    overlay.remove();
-                    ui_enable();
-                    console.log("Validation failed!");
-                    ui_submit_failedvalidation();
-                }
-            });
-    }
-
-    function respawnjob(callback)
-    {
-        server_request("respawnjob", [job.jobid], function() {
-            callback();
-        });
-    }
-    
-    function savejob(callback)
-    {
-        server_post("savejob", [job.jobid],
-            tracks.serialize(), function(data) {
-                callback()
-            });
-    }
-
-    function finishsubmit(redirect)
-    {
-        if (mturk_isoffline())
-        {
-            window.setTimeout(function() {
-                note.remove();
-                overlay.remove();
-                ui_enable();
-            }, 1000);
-        }
-        else
-        {
-            window.setTimeout(function() {
-                redirect();
-            }, 1000);
-        }
-    }
-
-    if (job.training)
-    {
-        console.log("Submit redirect to train validate");
-
-        note.html("Checking...");
-        validatejob(function() {
-            savejob(function() {
-                mturk_submit(function(redirect) {
-                    respawnjob(function() {
-                        note.html("Good work!");
-                        finishsubmit(redirect);
-                    });
-                });
-            });
-        });
-    }
-    else
-    {
-        note.html("Saving...");
-        savejob(function() {
-            mturk_submit(function(redirect) {
-                note.html("Saved!");
-                finishsubmit(redirect);
-            });
-        });
-    }
-}
-
-function ui_submit_failedvalidation()
-{
-    $('<div id="turkic_overlay"></div>').appendTo("#container");
-    var h = $('<div id="failedverificationdialog"></div>')
-    h.appendTo("#container");
-
-    h.append("<h1>Low Quality Work</h1>");
-    h.append("<p>Sorry, but your work is low quality. We would normally <strong>reject this assignment</strong>, but we are giving you the opportunity to correct your mistakes since you are a new user.</p>");
-    
-    h.append("<p>Please review the instructions, double check your annotations, and submit again. Remember:</p>");
-
-    var str = "<ul>";
-    str += "<li>You must label every object.</li>";
-    str += "<li>You must draw your boxes as tightly as possible.</li>";
-    str += "</ul>";
-
-    h.append(str);
-
-    h.append("<p>When you are ready to continue, press the button below.</p>");
-
-    $('<div class="button" id="failedverificationbutton">Try Again</div>').appendTo(h).button({
-        icons: {
-            primary: "ui-icon-refresh"
-        }
-    }).click(function() {
-        $("#turkic_overlay").remove();
-        h.remove();
-    }).wrap("<div style='text-align:center;padding:5x 0;' />");
+  // TODO implement for PyBossa
+  console.log(job);
+  console.log(tracks.serialize());
 }
 
 function ui_disable()

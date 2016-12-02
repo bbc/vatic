@@ -726,7 +726,6 @@ function Track(player, color, position)
                     me.fixposition();
                     me.recordposition();
                     me.notifyupdate();
-                    eventlog("resizable", "Resize a box");
                     me.highlight(false);
                 },
                 resize: function() {
@@ -744,7 +743,6 @@ function Track(player, color, position)
                     me.fixposition();
                     me.recordposition();                
                     me.notifyupdate();
-                    eventlog("draggable", "Drag-n-drop a box");
                 },
                 cancel: ".boundingboxtext"
             });

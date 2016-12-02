@@ -29,10 +29,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
 
         console.log("Starting new track object");
 
-        eventlog("newobject", "Start drawing new object");
-
-        //this.instructions.fadeOut();
-
         this.currentcolor = this.pickcolor();
         this.drawer.color = this.currentcolor[0];
         this.drawer.enable();
@@ -268,11 +264,9 @@ function TrackObject(job, player, container, color)
 
         this.track.onupdate.push(function() {
             me.hidetooltip();
-            eventlog("interact", "Interact with box " + me.id);
         });
 
         this.track.notifyupdate();
-        eventlog("newobject", "Finished drawing new object");
     }
 
     this.remove = function()
@@ -424,15 +418,6 @@ function TrackObject(job, player, container, color)
                     me.track.notifyupdate();
 
                     me.updateboxtext();
-
-                    if (checked) 
-                    {
-                        eventlog("markattribute", "Mark object as " + me.job.attributes[me.track.label][attributeid]);
-                    }
-                    else
-                    {
-                        eventlog("markattribute", "Mark object as not " + me.job.attributes[me.track.label][attributeid]);
-                    }
                 });
 
             })(i);
@@ -445,15 +430,6 @@ function TrackObject(job, player, container, color)
             var outside = $(this).is(":checked");
             me.track.setoutside(outside);
             me.track.notifyupdate();
-
-            if (outside)
-            {
-                eventlog("markoutside", "Mark object outside");
-            }
-            else
-            {
-                eventlog("markoutside", "Mark object inside");
-            }
         });
         $("#trackobject" + this.id + "occluded").click(function() {
             me.player.pause();
@@ -461,22 +437,12 @@ function TrackObject(job, player, container, color)
             var occlusion = $(this).is(":checked");
             me.track.setocclusion(occlusion);
             me.track.notifyupdate();
-
-            if (occlusion)
-            {
-                eventlog("markocclusion", "Mark object as occluded");
-            }
-            else
-            {
-                eventlog("markocclusion", "Mark object as not occluded");
-            }
         });
 
         this.player.onupdate.push(function() {
             me.updatecheckboxes();
         });
 
-        //this.details.append("<br><input type='button' id='trackobject" + this.id + "label' value='Change Type'>");
         this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
         this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-unlocked' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
         this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-image' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
@@ -485,7 +451,6 @@ function TrackObject(job, player, container, color)
             if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
             {
                 me.remove();
-                eventlog("removeobject", "Deleted an object");
             }
         });
 
