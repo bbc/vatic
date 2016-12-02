@@ -30,15 +30,10 @@ function ui_setup(job)
 
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
 
-    $("<div class='button' id='openadvancedoptions'>Options</div>")
-        .button({
-            icons: {
-                primary: "ui-icon-wrench"
-            }
-        }).appendTo($("#advancedoptions").parent()).click(function() {
-                $(this).remove();
-                $("#advancedoptions").show();
-            });
+    $("#openadvancedoptions").click(function() {
+      $(this).remove();
+      $("#advancedoptions").show();
+    });
 
     $("#advancedoptions").hide();
 
@@ -48,14 +43,9 @@ function ui_setup(job)
 function ui_setupbuttons(job, player, tracks)
 {
     $("#playbutton").click(function() {
-        if (!$(this).button("option", "disabled"))
+        if (!$(this).attr("disabled"))
         {
             player.toggle();
-        }
-    }).button({
-        disabled: false,
-        icons: {
-            primary: "ui-icon-play"
         }
     });
 
@@ -71,31 +61,18 @@ function ui_setupbuttons(job, player, tracks)
     });
 
     player.onplay.push(function() {
-        $("#playbutton").button("option", {
-            label: "Pause",
-            icons: {
-                primary: "ui-icon-pause"
-            }
-        });
+        $("#playbutton").text("Pause");
     });
 
     player.onpause.push(function() {
-        $("#playbutton").button("option", {
-            label: "Play",
-            icons: {
-                primary: "ui-icon-play"
-            }
-        });
+        $("#playbutton").text("Play");
     });
 
     player.onupdate.push(function() {
-        if (player.frame == player.job.stop)
-        {
-            $("#playbutton").button("option", "disabled", true);
-        }
-        else if ($("#playbutton").button("option", "disabled"))
-        {
-            $("#playbutton").button("option", "disabled", false);
+        if (player.frame == player.job.stop) {
+            $("#playbutton").attr("disabled", true);
+        } else if ($("#playbutton").attr("disabled")) {
+            $("#playbutton").removeAttr("disabled");
         }
 
         if (player.frame == player.job.start)
@@ -281,7 +258,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
             console.log("Key frame hit");
             player.pause();
             $("#newobjectbutton").button("option", "disabled", false);
-            $("#playbutton").button("option", "disabled", false);
+            $("#playbutton").removeAttr("disabled");
             tracks.draggable(true);
             tracks.resizable(ui_canresize());
             tracks.recordposition();
@@ -290,7 +267,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
         else
         {
             $("#newobjectbutton").button("option", "disabled", true);
-            $("#playbutton").button("option", "disabled", true);
+            $("#playbutton").attr("disabled", true);
             tracks.draggable(false);
             tracks.resizable(false);
             objectui.disable();
@@ -335,7 +312,7 @@ function ui_disable()
     if (ui_disabled++ == 0)
     {
         $("#newobjectbutton").button("option", "disabled", true);
-        $("#playbutton").button("option", "disabled", true);
+        $("#playbutton").attr("disabled", true);
         $("#rewindbutton").button("option", "disabled", true);
         $("#submitbutton").button("option", "disabled", true);
         $("#playerslider").slider("option", "disabled", true);
@@ -351,7 +328,7 @@ function ui_enable()
     if (--ui_disabled == 0)
     {
         $("#newobjectbutton").button("option", "disabled", false);
-        $("#playbutton").button("option", "disabled", false);
+        $("#playbutton").removeAttr("disabled");
         $("#rewindbutton").button("option", "disabled", false);
         $("#submitbutton").button("option", "disabled", false);
         $("#playerslider").slider("option", "disabled", false);

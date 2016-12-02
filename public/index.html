@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="jquery-ui/css/smoothness/jquery-ui-1.10.4.custom.css">
 
 <script src="jquery.js"></script>
+<script src="vendor/bootstrap/2.2.1/js/bootstrap.min.js"></script>
 <script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js?v=mar8"></script>
 <script src="videoplayer.js?v=jul1"></script>
 <script src="preload.js?v=jul1"></script>
@@ -30,7 +31,7 @@
         <td>
 	  <div id='topbar'>
             <div id='newobjectcontainer'>
-              <div class='button' id='newobjectbutton'>New Object</div>
+              <button class='btn' id='newobjectbutton'>New Object</button>
 	    </div>
 	  </div>
 	</td>
@@ -50,28 +51,30 @@
           <div id='bottombar'>
             <div id='playerslider'></div>
             <div class='button' id='rewindbutton'>Rewind</div>
-            <div class='button' id='playbutton'>Play</div>
+            <button class='btn' id='playbutton'>Play</button>
 	  </div>
         </td> 
       </tr>
       <tr>
         <td>
+	  <button class='btn' id='openadvancedoptions'>Options</button>
           <div id='advancedoptions'>
-            <input type='checkbox' id='annotateoptionsresize'>
-            <label for='annotateoptionsresize'>Disable Resize?</label>
-            <input type='checkbox' id='annotateoptionshideboxes'>
-            <label for='annotateoptionshideboxes'>Hide Boxes?</label>
-            <input type='checkbox' id='annotateoptionshideboxtext'>
-            <label for='annotateoptionshideboxtext'>Hide Labels?</label>
-            <div id='speedcontrol'>
-            <input type='radio' name='speedcontrol' value='5,1' id='speedcontrolslower'>
-            <label for='speedcontrolslower'>Slower</label>
-            <input type='radio' name='speedcontrol' value='15,1' id='speedcontrolslow'>
-            <label for='speedcontrolslow'>Slow</label>
-            <input type='radio' name='speedcontrol' value='30,1' id='speedcontrolnorm' checked='checked'>
-            <label for='speedcontrolnorm'>Normal</label>
-            <input type='radio' name='speedcontrol' value='90,1' id='speedcontrolfast'>
-            <label for='speedcontrolfast'>Fast</label>
+              <input type='checkbox' id='annotateoptionsresize'>
+              <label for='annotateoptionsresize'>Disable Resize?</label>
+              <input type='checkbox' id='annotateoptionshideboxes'>
+              <label for='annotateoptionshideboxes'>Hide Boxes?</label>
+              <input type='checkbox' id='annotateoptionshideboxtext'>
+              <label for='annotateoptionshideboxtext'>Hide Labels?</label>
+              <div id='speedcontrol'>
+                <input type='radio' name='speedcontrol' value='5,1' id='speedcontrolslower'>
+                <label for='speedcontrolslower'>Slower</label>
+                <input type='radio' name='speedcontrol' value='15,1' id='speedcontrolslow'>
+                <label for='speedcontrolslow'>Slow</label>
+                <input type='radio' name='speedcontrol' value='30,1' id='speedcontrolnorm' checked='checked'>
+                <label for='speedcontrolnorm'>Normal</label>
+                <input type='radio' name='speedcontrol' value='90,1' id='speedcontrolfast'>
+                <label for='speedcontrolfast'>Fast</label>
+	      </div>
           </div>
         </td>
         <td>
