@@ -83,8 +83,6 @@ function loadingscreen(job)
                 ls.remove()
                 ui_build(job);
 
-                mturk_enabletimer();
-
                 eventlog("preload", "Done preloading");
             }
         })
