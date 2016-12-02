@@ -183,30 +183,12 @@ function ui_areboxeshidden()
 function ui_setupslider(player)
 {
     var slider = $("#playerslider");
-    slider.slider({
-        range: "min",
-        value: player.job.start,
-        min: player.job.start,
-        max: player.job.stop,
-        slide: function(event, ui) {
-            player.pause();
-            player.seek(ui.value);
-        }
-    });
 
-    /*slider.children(".ui-slider-handle").hide();*/
-    slider.children(".ui-slider-range").css({
-        "background-color": "#868686",
-        "background-image": "none"});
-
-    slider.css({
-        marginTop: "6px",
-        width: parseInt(slider.parent().css("width")) - 200 + "px", 
-        float: "right"
-    });
-
+    var min = player.job.start;
+    var max = player.job.stop;
     player.onupdate.push(function() {
-        slider.slider({value: player.frame});
+	var percent = ((player.frame - min) / max) * 100;
+        slider.children(".bar").width(percent + "%");
     });
 }
 
