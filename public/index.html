@@ -20,7 +20,7 @@
 
 </head>
 <body>
-<div id="container">
+<div class="container" id="container">
   <div id='loadingscreen'>
     <div id='loadingscreentext'>Downloading the video...</div>
     <div class="progress progress-striped active" id='loadingscreenslider'>
@@ -28,39 +28,33 @@
     </div>
   </div>
   <div id='annotatescreen'>
-    <table style="width: 100%"> 
-      <tr>
-        <td>
-	  <div id='topbar'>
-            <div id='newobjectcontainer'>
-              <button class='btn' id='newobjectbutton'>New Object</button>
-	    </div>
+      <div class="row">
+	<div class="span12" id='topbar'>
+          <div id='newobjectcontainer'>
+            <button class='btn' id='newobjectbutton'>New Object</button>
 	  </div>
-	</td>
-      </tr>
-      <tr>
-        <td>
+	</div>
+      </div>
+      <div class="row">
+        <div class="span10">
 	  <div id='videoframe'></div>
-        </td> 
-        <td rowspan='2'>
-	  <div id='sidebar'>
+        </div> 
+	<div class="span2" id='sidebar'>
             <div id='objectcontainer'></div>
-	  </div>
-	</td>
-      </tr> 
-      <tr>
-        <td>
-          <div id='bottombar'>
-            <div class="progress progress-striped active" id='playerslider'>
-              <div class="bar"></div>
-	    </div>
-            <button class='btn' id='rewindbutton' disabled>Rewind</button>
-            <button class='btn' id='playbutton'>Play</button>
-	  </div>
-        </td> 
-      </tr>
-      <tr>
-        <td>
+	</div>
+      </div> 
+      <div class="row">
+        <div class="span12" id='bottombar'>
+          <div class="progress progress-striped active" id='playerslider'>
+            <div class="bar"></div>
+          </div>
+          <button class='btn' id='rewindbutton' disabled>Rewind</button>
+          <button class='btn' id='playbutton'>Play</button>
+          <button id='submitbutton' class='btn'>Submit</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12">
 	  <button class='btn' id='openadvancedoptions'>Options</button>
           <div id='advancedoptions'>
               <label for='annotateoptionsresize'>
@@ -94,14 +88,8 @@
 		</label>
 	      </div>
           </div>
-        </td>
-        <td>
-          <div id='submitbar'>
-            <button id='submitbutton' class='btn'>Submit</button>
-	  </div>
-        </td>
-      </tr>
-    </table>
+        </div>
+      </div>
   </div>
 </div>
 <div class="hidden" id='preloadpit'></div>
