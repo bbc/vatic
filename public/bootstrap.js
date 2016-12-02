@@ -23,40 +23,12 @@ $(document).ready(function() {
 
     job = job_import(data);
 
-    if (!development && !mturk_isoffline())
-    {
-        ui_showinstructions(job);
-    }
-
-    $("#loadingscreeninstructions").button({
-        icons: {
-            primary: "ui-icon-newwin"
-        }
-    }).click(function() {
-        ui_showinstructions(job);
-    });
-
-    eventlog("preload", "Start preloading");
-
     preloadvideo(job.start, job.stop, job.frameurl,
-        preloadslider($("#loadingscreenslider"), function(progress) {
-            if (progress == 1)
-            {
-                if (!development && !mturk_isoffline())
-                {
-                    /*$("body").append('<div id="music"><embed src="magic.mp3">' +
-                        '<noembed><bgsound src="magic.mp3"></noembed></div>');*/
-
-                    window.setTimeout(function() {
-                        $("#music").remove();
-                    }, 2000);
-                }
-
-                $("#loadingscreen").hide();
-                ui_build(job);
-
-                eventlog("preload", "Done preloading");
-            }
-        })
+      preloadslider($("#loadingscreenslider"), function(progress) {
+        if (progress == 1) {
+          $("#loadingscreen").hide();
+          ui_build(job);
+        }
+      })
     );
 });
