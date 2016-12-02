@@ -23,7 +23,9 @@
 <div id="container">
   <div id='loadingscreen'>
     <div id='loadingscreentext'>Downloading the video...</div>
-    <div id='loadingscreenslider'></div>
+    <div class="progress progress-striped active" id='loadingscreenslider'>
+      <div class="bar"></div>
+    </div>
   </div>
   <div id='annotatescreen'>
     <table style="width: 100%"> 
@@ -102,6 +104,7 @@
     </table>
   </div>
 </div>
+<div class="hidden" id='preloadpit'></div>
 <script type="text/javascript">
 $(document).ready(function() {
     data = {

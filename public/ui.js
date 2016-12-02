@@ -280,7 +280,7 @@ function ui_disable()
         $("#playbutton").attr("disabled", true);
         $("#rewindbutton").attr("disabled", true);
         $("#submitbutton").attr("disabled", true);
-        $("#playerslider").slider("option", "disabled", true);
+        $("#playerslider").attr("disabled", true);
 
         console.log("Disengaged UI");
     }
@@ -296,7 +296,7 @@ function ui_enable()
         $("#playbutton").removeAttr("disabled");
         $("#rewindbutton").removeAttr("disabled");
         $("#submitbutton").removeAttr("disabled");
-        $("#playerslider").slider("option", "disabled", false);
+        $("#playerslider").removeAttr("disabled");
 
         console.log("Engaged UI");
     }

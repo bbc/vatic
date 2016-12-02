@@ -8,11 +8,6 @@ function preload(queue, onprogress)
 {
     onprogress(0.0);
 
-    if ($("#preloadpit").size() == 0)
-    {
-        $("<div id='preloadpit'></div>").appendTo("body").hide();
-    }
-
     function process(remaining, count)
     {
         if (remaining.length >= 1)
@@ -64,25 +59,12 @@ function preloadvideo(start, stop, generator, onprogress)
  */
 function preloadslider(slider, onprogress)
 {
-    var text = $('<div class="text"></div>').appendTo(slider);
-    text.css({
-        'float': 'left',
-    });
-    var pg = $('<div class="progressbar"></div>').appendTo(slider);
-    pg.css({
-        'width': '0%',
-        'display': 'block',
-        'height': '100%',
-    });
-
     function progress(percent)
     {
-        if (onprogress)
-        {
+        if (onprogress) {
             onprogress(percent);
         }
-        pg.css('width', percent * 100 + '%');
-        text.html(Math.floor(percent * 100) + "%");
+        slider.children(".bar").width(percent * 100 + "%");
     }
 
     return progress;
