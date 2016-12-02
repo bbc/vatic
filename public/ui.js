@@ -2,7 +2,7 @@ var ui_disabled = 0;
 
 function ui_build(job)
 {
-    var screen = ui_setup(job);
+    ui_setup(job);
     var videoframe = $("#videoframe");
     var player = new VideoPlayer(videoframe, job);
     var tracks = new TrackCollection(player, job);
@@ -25,29 +25,7 @@ function ui_build(job)
 
 function ui_setup(job)
 {
-    var screen = $("<div id='annotatescreen'></div>").appendTo(container);
-
-    $("<table>" + 
-        "<tr>" +
-            "<td><div id='instructionsbutton' class='button'>Instructions</div><div id='instructions'>Annotate every object, even stationary and obstructed objects, for the entire video.</td>" +
-            "<td><div id='topbar'></div></td>" +
-        "</tr>" +
-        "<tr>" +
-              "<td><div id='videoframe'></div></td>" + 
-              "<td rowspan='2'><div id='sidebar'></div></td>" +
-          "</tr>" + 
-          "<tr>" +
-              "<td><div id='bottombar'></div></td>" + 
-          "</tr>" +
-          "<tr>" +
-              "<td><div id='advancedoptions'></div></td>" +
-              "<td><div id='submitbar'></div></td>" +
-          "</tr>" +
-      "</table>").appendTo(screen).css("width", "100%");
-
-
     var playerwidth = Math.max(720, job.width);
-
 
     $("#videoframe").css({"width": job.width + "px",
                           "height": job.height + "px",
@@ -58,15 +36,6 @@ function ui_setup(job)
                        "width": "205px"});
 
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
-
-    $("#bottombar").append("<div id='playerslider'></div>");
-    $("#bottombar").append("<div class='button' id='rewindbutton'>Rewind</div> ");
-    $("#bottombar").append("<div class='button' id='playbutton'>Play</div> ");
-
-    $("#topbar").append("<div id='newobjectcontainer'>" +
-        "<div class='button' id='newobjectbutton'>New Object</div></div>");
-
-    $("<div id='objectcontainer'></div>").appendTo("#sidebar");
 
     $("<div class='button' id='openadvancedoptions'>Options</div>")
         .button({
@@ -81,38 +50,7 @@ function ui_setup(job)
 
     $("#advancedoptions").hide();
 
-    $("#advancedoptions").append(
-    "<input type='checkbox' id='annotateoptionsresize'>" +
-    "<label for='annotateoptionsresize'>Disable Resize?</label> " +
-    "<input type='checkbox' id='annotateoptionshideboxes'>" +
-    "<label for='annotateoptionshideboxes'>Hide Boxes?</label> " +
-    "<input type='checkbox' id='annotateoptionshideboxtext'>" +
-    "<label for='annotateoptionshideboxtext'>Hide Labels?</label> ");
 
-    $("#advancedoptions").append(
-    "<div id='speedcontrol'>" +
-    "<input type='radio' name='speedcontrol' " +
-        "value='5,1' id='speedcontrolslower'>" +
-    "<label for='speedcontrolslower'>Slower</label>" +
-    "<input type='radio' name='speedcontrol' " +
-        "value='15,1' id='speedcontrolslow'>" +
-    "<label for='speedcontrolslow'>Slow</label>" +
-    "<input type='radio' name='speedcontrol' " +
-        "value='30,1' id='speedcontrolnorm' checked='checked'>" +
-    "<label for='speedcontrolnorm'>Normal</label>" +
-    "<input type='radio' name='speedcontrol' " +
-        "value='90,1' id='speedcontrolfast'>" +
-    "<label for='speedcontrolfast'>Fast</label>" +
-    "</div>");
-
-    $("#submitbar").append("<div id='submitbutton' class='button'>Submit HIT</div>");
-
-    if (mturk_isoffline())
-    {
-        $("#submitbutton").html("Save Work");
-    }
-
-    return screen;
 }
 
 function ui_setupbuttons(job, player, tracks)
