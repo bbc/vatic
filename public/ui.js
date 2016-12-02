@@ -53,11 +53,6 @@ function ui_setupbuttons(job, player, tracks)
         if (ui_disabled) return;
         player.pause();
         player.seek(player.job.start);
-    }).button({
-        disabled: true,
-        icons: {
-            primary: "ui-icon-seek-first"
-        }
     });
 
     player.onplay.push(function() {
@@ -75,13 +70,10 @@ function ui_setupbuttons(job, player, tracks)
             $("#playbutton").removeAttr("disabled");
         }
 
-        if (player.frame == player.job.start)
-        {
-            $("#rewindbutton").button("option", "disabled", true);
-        }
-        else if ($("#rewindbutton").button("option", "disabled"))
-        {
-            $("#rewindbutton").button("option", "disabled", false);
+        if (player.frame == player.job.start) {
+            $("#rewindbutton").attr("disabled", true);
+        } else if ($("#rewindbutton").attr("disabled")) {
+            $("#rewindbutton").removeAttr("disabled");
         }
     });
 
@@ -313,7 +305,7 @@ function ui_disable()
     {
         $("#newobjectbutton").button("option", "disabled", true);
         $("#playbutton").attr("disabled", true);
-        $("#rewindbutton").button("option", "disabled", true);
+        $("#rewindbutton").attr("disabled", true);
         $("#submitbutton").button("option", "disabled", true);
         $("#playerslider").slider("option", "disabled", true);
 
@@ -329,7 +321,7 @@ function ui_enable()
     {
         $("#newobjectbutton").button("option", "disabled", false);
         $("#playbutton").removeAttr("disabled");
-        $("#rewindbutton").button("option", "disabled", false);
+        $("#rewindbutton").removeAttr("disabled");
         $("#submitbutton").button("option", "disabled", false);
         $("#playerslider").slider("option", "disabled", false);
 
