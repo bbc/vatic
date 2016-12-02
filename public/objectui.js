@@ -20,7 +20,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
 
     this.startnewobject = function()
     {
-        if (this.button.button("option", "disabled"))
+        if (this.button.attr("disabled"))
         {
             return;
         }
@@ -33,7 +33,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.drawer.color = this.currentcolor[0];
         this.drawer.enable();
 
-        this.button.button("option", "disabled", true);
+        this.button.attr("disabled", true);
 
         this.currentobject = new TrackObject(this.job, this.player,
                                              this.container,
@@ -83,7 +83,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.tracks.dim(false);
         this.currentobject.track.highlight(false);
 
-        this.button.button("option", "disabled", false);
+        this.button.removeAttr("disabled");
 
         this.counter++;
     }
@@ -130,12 +130,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
 
     this.setup = function()
     {
-        this.button.button({
-            icons: {
-                primary: "ui-icon-plusthick",
-            },
-            disabled: false
-        }).click(function() {
+        this.button.click(function() {
             me.startnewobject();
         });
 

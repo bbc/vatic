@@ -249,7 +249,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
         {
             console.log("Key frame hit");
             player.pause();
-            $("#newobjectbutton").button("option", "disabled", false);
+            $("#newobjectbutton").removeAttr("disabled");
             $("#playbutton").removeAttr("disabled");
             tracks.draggable(true);
             tracks.resizable(ui_canresize());
@@ -258,7 +258,7 @@ function ui_setupclickskip(job, player, tracks, objectui)
         }
         else
         {
-            $("#newobjectbutton").button("option", "disabled", true);
+            $("#newobjectbutton").attr("disabled", true);
             $("#playbutton").attr("disabled", true);
             tracks.draggable(false);
             tracks.resizable(false);
@@ -303,7 +303,7 @@ function ui_disable()
 {
     if (ui_disabled++ == 0)
     {
-        $("#newobjectbutton").button("option", "disabled", true);
+        $("#newobjectbutton").attr("disabled", true);
         $("#playbutton").attr("disabled", true);
         $("#rewindbutton").attr("disabled", true);
         $("#submitbutton").button("option", "disabled", true);
@@ -319,7 +319,7 @@ function ui_enable()
 {
     if (--ui_disabled == 0)
     {
-        $("#newobjectbutton").button("option", "disabled", false);
+        $("#newobjectbutton").removeAttr("disabled");
         $("#playbutton").removeAttr("disabled");
         $("#rewindbutton").removeAttr("disabled");
         $("#submitbutton").button("option", "disabled", false);
