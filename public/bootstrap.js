@@ -15,7 +15,7 @@ $(document).ready(function() {
       "completion":"100", // TODO remove later
       "blowradius":"5", // TODO remove later?
       "labels":"[\"cat\",\"dog\",\"fish\"]",
-      "attributes":"[\"happy\",\"sad\"]",
+      "attributes":"[[\"fat\", \"thin\"],[\"happy\",\"sad\"],[\"big\",\"little\"]]",
       "training":"0", // TODO remove later
       "verified":"1", // TODO remove later
       "data":"[{\"label\",\"cat 1\",\"attributes\":[],\"boxes\":[]}]"

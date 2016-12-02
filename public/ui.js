@@ -418,17 +418,14 @@ function ui_loadprevious(job, objectui)
     var overlay = $('<div id="turkic_overlay"></div>').appendTo("#container");
     var note = $("<div id='submitdialog'>One moment...</div>").appendTo("#container");
 
-    /*server_request("getboxesforjob", [job.jobid], function(data) {
-        overlay.remove();
-        note.remove();
+    overlay.remove();
+    note.remove();
 
-        for (var i in data)
-        {
+    for (var i in data) {
             objectui.injectnewobject(data[i]["label"],
                                      data[i]["boxes"],
                                      data[i]["attributes"]);
-        }
-    });*/
+   }
 }
 
 function ui_setupsubmit(job, tracks)

@@ -36,8 +36,8 @@ function job_import(data)
     job.completion = parseFloat(data["completion"]);
     job.blowradius = parseInt(data["blowradius"]);
     job.jobid = parseInt(data["jobid"]);
-    job.labels = data["labels"];
-    job.attributes = data["attributes"];
+    job.labels = JSON.parse(data["labels"]);
+    job.attributes = JSON.parse(data["attributes"]);
     job.training = parseInt(data["training"]);
 
     console.log("Job configured!");
