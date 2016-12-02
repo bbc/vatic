@@ -55,15 +55,6 @@ function ui_setup(job)
 
 function ui_setupbuttons(job, player, tracks)
 {
-    $("#instructionsbutton").click(function() {
-        player.pause();
-        ui_showinstructions(job); 
-    }).button({
-        icons: {
-            primary: "ui-icon-newwin"
-        }
-    });
-
     $("#playbutton").click(function() {
         if (!$(this).button("option", "disabled"))
         {
@@ -503,41 +494,6 @@ function ui_submit_failedvalidation()
         $("#turkic_overlay").remove();
         h.remove();
     }).wrap("<div style='text-align:center;padding:5x 0;' />");
-}
-
-function ui_showinstructions(job)
-{
-    console.log("Popup instructions");
-
-    if ($("#instructionsdialog").size() > 0)
-    {
-        return;
-    }
-
-    eventlog("instructions", "Popup instructions");
-
-    $('<div id="turkic_overlay"></div>').appendTo("#container");
-    var h = $('<div id="instructionsdialog"></div>').appendTo("#container");
-
-    $('<div class="button" id="instructionsclosetop">Dismiss Instructions</div>').appendTo(h).button({
-        icons: {
-            primary: "ui-icon-circle-close"
-        }
-    }).click(ui_closeinstructions);
-
-    instructions(job, h)
-
-    ui_disable();
-}
-
-function ui_closeinstructions()
-{
-    console.log("Popdown instructions");
-    $("#turkic_overlay").remove();
-    $("#instructionsdialog").remove();
-    eventlog("instructions", "Popdown instructions");
-
-    ui_enable();
 }
 
 function ui_disable()
