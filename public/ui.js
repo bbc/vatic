@@ -277,11 +277,7 @@ function ui_loadprevious(job, objectui)
 
 function ui_setupsubmit(job, tracks)
 {
-    $("#submitbutton").button({
-        icons: {
-            primary: 'ui-icon-check'
-        }
-    }).click(function() {
+    $("#submitbutton").click(function() {
         if (ui_disabled) return;
         ui_submit(job, tracks);
     });
@@ -301,7 +297,7 @@ function ui_disable()
         $("#newobjectbutton").attr("disabled", true);
         $("#playbutton").attr("disabled", true);
         $("#rewindbutton").attr("disabled", true);
-        $("#submitbutton").button("option", "disabled", true);
+        $("#submitbutton").attr("disabled", true);
         $("#playerslider").slider("option", "disabled", true);
 
         console.log("Disengaged UI");
@@ -317,7 +313,7 @@ function ui_enable()
         $("#newobjectbutton").removeAttr("disabled");
         $("#playbutton").removeAttr("disabled");
         $("#rewindbutton").removeAttr("disabled");
-        $("#submitbutton").button("option", "disabled", false);
+        $("#submitbutton").removeAttr("disabled");
         $("#playerslider").slider("option", "disabled", false);
 
         console.log("Engaged UI");
