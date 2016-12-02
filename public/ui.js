@@ -43,8 +43,7 @@ function ui_setup(job)
 function ui_setupbuttons(job, player, tracks)
 {
     $("#playbutton").click(function() {
-        if (!$(this).attr("disabled"))
-        {
+        if (!$(this).attr("disabled")) {
             player.toggle();
         }
     });
@@ -77,7 +76,6 @@ function ui_setupbuttons(job, player, tracks)
         }
     });
 
-    $("#speedcontrol").buttonset();
     $("input[name='speedcontrol']").click(function() {
         player.fps = parseInt($(this).val().split(",")[0]);
         player.playdelta = parseInt($(this).val().split(",")[1]);
@@ -90,25 +88,22 @@ function ui_setupbuttons(job, player, tracks)
         }
     });
 
-    $("#annotateoptionsresize").button().click(function() {
+    $("#annotateoptionsresize").click(function() {
         var resizable = $(this).attr("checked") ? false : true;
         tracks.resizable(resizable);
     });
 
-    $("#annotateoptionshideboxes").button().click(function() {
+    $("#annotateoptionshideboxes").click(function() {
         var visible = !$(this).attr("checked");
         tracks.visible(visible);
     });
 
-    $("#annotateoptionshideboxtext").button().click(function() {
+    $("#annotateoptionshideboxtext").click(function() {
         var visible = !$(this).attr("checked");
 
-        if (visible)
-        {
+        if (visible) {
             $(".boundingboxtext").show();
-        }
-        else
-        {
+        } else {
             $(".boundingboxtext").hide();
         }
     });
