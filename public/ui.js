@@ -421,7 +421,7 @@ function ui_loadprevious(job, objectui)
     overlay.remove();
     note.remove();
 
-    for (var i in data) {
+    for (var i in job.data) {
             objectui.injectnewobject(data[i]["label"],
                                      data[i]["boxes"],
                                      data[i]["attributes"]);
