@@ -408,7 +408,8 @@ function TrackObject(job, player, container, color)
                 $("#trackobject" + me.id + "attribute" + i).click(function() {
                     me.player.pause();
 
-                    var checked = $(this).attr("checked");
+                    var checked = $(this).is(":checked");
+		    console.log("setattribute " + attributeid + " " + checked); 
                     me.track.setattribute(attributeid, checked ? true : false);
                     me.track.notifyupdate();
 
