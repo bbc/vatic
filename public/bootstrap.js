@@ -3,18 +3,6 @@ var development = false;
 var container;
 
 $(document).ready(function() {
-    mturk_ready(function() {
-        mturk_blockbadworkers(boot);
-    });
-});
-
-function isIE () {
-  var myNav = navigator.userAgent.toLowerCase();
-  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
-}
-
-function boot()
-{
     console.log("Booting...");
 
     container = $("#container");
@@ -58,6 +46,11 @@ function boot()
         console.log("Worker is NOT verified");
         dispatch(true);
     });
+});
+
+function isIE () {
+  var myNav = navigator.userAgent.toLowerCase();
+  return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
 }
 
 function loadingscreen(job)
