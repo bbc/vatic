@@ -120,7 +120,7 @@ $(document).ready(function() {
       preloadslider($("#loadingscreenslider"), function(progress) {
         if (progress == 1) {
           $("#loadingscreen").hide();
-          ui_build(job);
+          ui_build(task, job);
         }
       })
     );

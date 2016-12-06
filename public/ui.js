@@ -1,6 +1,6 @@
 var ui_disabled = 0;
 
-function ui_build(job)
+function ui_build(task, job)
 {
     ui_setup(job);
     var videoframe = $("#videoframe");
@@ -20,7 +20,7 @@ function ui_setup(job)
 {
     var playerwidth = Math.max(720, job.width);
 
-    /*$("#videoframe").css({"width": job.width + "px",
+    $("#videoframe").css({"width": job.width + "px",
                           "height": job.height + "px",
                           "margin": "0 auto"})
                     .parent().css("width", playerwidth + "px");
@@ -29,7 +29,7 @@ function ui_setup(job)
                        "width": "205px"});
 
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
-*/
+
     $("#openadvancedoptions").click(function() {
       $(this).remove();
       $("#advancedoptions").show();
