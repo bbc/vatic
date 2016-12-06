@@ -5,18 +5,17 @@
 <title>vatic</title>
 
 <link rel="stylesheet" type="text/css" href="vendor/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+<link rel="stylesheet" type="text/css" href="vatic.css">
 <link rel="stylesheet" type="text/css" href="jquery-ui/css/smoothness/jquery-ui-1.10.4.custom.css">
 
 <script src="jquery.js"></script>
-<script src="vendor/bootstrap/2.2.1/js/bootstrap.min.js"></script>
-<script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js?v=mar8"></script>
-<script src="videoplayer.js?v=jul1"></script>
-<script src="preload.js?v=jul1"></script>
-<script src="objectui.js?v=jul1"></script>
-<script src="ui.js?v=jul1"></script>
-<script src="job.js?v=jul1"></script>
-<script src="tracks.js?v=jul1"></script>
+<script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="videoplayer.js"></script>
+<script src="preload.js"></script>
+<script src="objectui.js"></script>
+<script src="ui.js"></script>
+<script src="job.js"></script>
+<script src="tracks.js"></script>
 
 </head>
 <body>
@@ -110,7 +109,7 @@ $(document).ready(function() {
       "attributes":"[[\"fat\", \"thin\"],[\"happy\",\"sad\"],[\"big\",\"little\"]]",
       "training":"0", // TODO remove later
       "verified":"1", // TODO remove later
-      "data":"[{\"label\",\"cat 1\",\"attributes\":[],\"boxes\":[]}]"
+      "data":"[{\"label\":0,\"attributes\":[[0,0,100]],\"boxes\":[[10.0,10.0,30.0,30.0,false,false],[20.0,20.0,40.0,40.0,false,false]]}]"
     }
 
     console.log("Booting...");
