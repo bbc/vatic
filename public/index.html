@@ -4,19 +4,11 @@
 
 <title>vatic</title>
 
-<link rel="stylesheet" type="text/css" href="vendor/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="pybossa.min.css">
 <link rel="stylesheet" type="text/css" href="vatic.css">
 <link rel="stylesheet" type="text/css" href="jquery-ui/css/smoothness/jquery-ui-1.10.4.custom.css">
 
 <script src="jquery.js"></script>
-<script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
-<script src="videoplayer.js"></script>
-<script src="preload.js"></script>
-<script src="objectui.js"></script>
-<script src="ui.js"></script>
-<script src="job.js"></script>
-<script src="tracks.js"></script>
-
 </head>
 <body>
 <div class="container" id="container">
@@ -27,71 +19,83 @@
     </div>
   </div>
   <div id='annotatescreen'>
-      <div class="row">
-	<div class="span12" id='topbar'>
-          <div id='newobjectcontainer'>
-            <button class='btn' id='newobjectbutton'>New Object</button>
-	  </div>
-	</div>
-      </div>
-      <div class="row">
-        <div class="span10">
-	  <div id='videoframe'></div>
-        </div> 
-	<div class="span2" id='sidebar'>
+    <class="row">
+	    <div class="col-md-12" id='topbar'>
+        <div id='newobjectcontainer'>
+          <button class='btn' id='newobjectbutton'>New Object</button>
+	      </div>
+	    </div>
+    </div>
+    <table>
+      <tr>
+        <td>
+          <div id='videoframe'></div>      
+        </td>
+        <td>
+	        <div class="" id='sidebar'>
             <div id='objectcontainer'></div>
-	</div>
-      </div> 
-      <div class="row">
-        <div class="span12" id='bottombar'>
-          <div class="progress progress-striped active" id='playerslider'>
-            <div class="bar"></div>
           </div>
-          <button class='btn' id='rewindbutton' disabled>Rewind</button>
-          <button class='btn' id='playbutton'>Play</button>
-          <button id='submitbutton' class='btn'>Submit</button>
+        <td>
+      </tr>
+    </table> 
+    <div class="row">
+      <div class="col-md-12" id='bottombar'>
+        <div class="progress progress-striped active" id='playerslider'>
+         <div class="bar"></div>
         </div>
+        <button class='btn' id='rewindbutton' disabled>Rewind</button>
+        <button class='btn' id='playbutton'>Play</button>
+        <button id='submitbutton' class='btn'>Submit</button>
       </div>
-      <div class="row">
-        <div class="span12">
-	  <button class='btn' id='openadvancedoptions'>Options</button>
-          <div id='advancedoptions'>
-              <label for='annotateoptionsresize'>
-                <input type='checkbox' id='annotateoptionsresize'>
-                Disable Resize?
-	      </label>
-              <label for='annotateoptionshideboxes'>
-                <input type='checkbox' id='annotateoptionshideboxes'>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+	      <button class='btn' id='openadvancedoptions'>Options</button>
+        <div id='advancedoptions'>
+          <label for='annotateoptionsresize'>
+            <input type='checkbox' id='annotateoptionsresize'>
+              Disable Resize?
+	          </label>
+            <label for='annotateoptionshideboxes'>
+              <input type='checkbox' id='annotateoptionshideboxes'>
                 Hide Boxes?
-	      </label>
+	            </label>
               <label for='annotateoptionshideboxtext'>
                 <input type='checkbox' id='annotateoptionshideboxtext'>
-                Hide Labels?
-	      </label>
+                  Hide Labels?
+	            </label>
               <div id='speedcontrol'>
                 <label for='speedcontrolslower'>
                   <input type='radio' name='speedcontrol' value='5,1' id='speedcontrolslower'>
-                  Slower
-		</label>
+                    Slower
+                </label>
                 <label for='speedcontrolslow'>
                   <input type='radio' name='speedcontrol' value='15,1' id='speedcontrolslow'>
                   Slow
-		</label>
+		            </label>
                 <label for='speedcontrolnorm'>
                   <input type='radio' name='speedcontrol' value='30,1' id='speedcontrolnorm' checked='checked'>
-                  Normal
-		</label>
+                    Normal
+		            </label>
                 <label for='speedcontrolfast'>
                   <input type='radio' name='speedcontrol' value='90,1' id='speedcontrolfast'>
                   Fast
-		</label>
-	      </div>
+		            </label>
+	            </div>
           </div>
         </div>
       </div>
   </div>
 </div>
 <div class="hidden" id='preloadpit'></div>
+<script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="videoplayer.js"></script>
+<script src="preload.js"></script>
+<script src="objectui.js"></script>
+<script src="ui.js"></script>
+<script src="job.js"></script>
+<script src="tracks.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
     data = {
@@ -120,7 +124,7 @@ $(document).ready(function() {
       preloadslider($("#loadingscreenslider"), function(progress) {
         if (progress == 1) {
           $("#loadingscreen").hide();
-          ui_build(task, job);
+          ui_build(new Object(), job);
         }
       })
     );
