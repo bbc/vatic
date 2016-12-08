@@ -108,6 +108,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
                                this.currentcolor[0]);
         for (var i = 1; i < path.length; i++)
         {
+            console.log("Mark " + i + " " + path.length)
             track.journal.mark(path[i][4], convert(path[i]));
         }
 

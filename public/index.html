@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="jquery-ui/css/smoothness/jquery-ui-1.10.4.custom.css">
 
 <script src="jquery.js"></script>
+<script src="pybossa.js"></script>
 </head>
 <body>
 <div class="container" id="container">
@@ -86,6 +87,7 @@
         </div>
       </div>
   </div>
+  <div id="success" style="display: none">Task Completed!</div>
 </div>
 <div class="hidden" id='preloadpit'></div>
 <script src="jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
@@ -98,7 +100,9 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    data = {
+    var task = new Object();
+    task.id = 100;
+    task.info = {
       "jobid":"100",
       "slug":"slug",
       "start":"0",
@@ -106,25 +110,21 @@ $(document).ready(function() {
       "width":"704",
       "height":"576",
       "skip":"25",
-      "perobject":"5", // TODO remove later
-      "completion":"100", // TODO remove later
       "blowradius":"5", // TODO remove later?
       "labels":"[\"cat\",\"dog\",\"fish\"]",
       "attributes":"[[\"fat\", \"thin\"],[\"happy\",\"sad\"],[\"big\",\"little\"]]",
-      "training":"0", // TODO remove later
-      "verified":"1", // TODO remove later
-      "data":"[{\"label\":0,\"attributes\":[[0,0,100]],\"boxes\":[[10.0,10.0,30.0,30.0,false,false],[20.0,20.0,40.0,40.0,false,false]]}]"
+      "data":"[{\"label\":0,\"attributes\":[[0,0,100]],\"boxes\":[[10.0,10.0,30.0,30.0,0,false,false],[100.0,100.0,130.0,130.0,25,false,false],[100.0,100.0,130.0,130.0,50,false,false],[100.0,100.0,130.0,130.0,75,false,false]]}]"
     }
 
     console.log("Booting...");
 
-    job = job_import(data);
+    job = job_import(task.info);
 
     preloadvideo(job.start, job.stop, job.frameurl,
       preloadslider($("#loadingscreenslider"), function(progress) {
         if (progress == 1) {
           $("#loadingscreen").hide();
-          ui_build(new Object(), job);
+          ui_build(task, job);
         }
       })
     );

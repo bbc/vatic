@@ -8,11 +8,10 @@ function Job(data)
     this.width = null; 
     this.height = null; 
     this.skip = null; 
-    this.perobject = null;
-    this.completion = null;
     this.blowradius = null;
     this.thisid = null;
     this.labels = null;
+    this.data = null;
 
     this.frameurl = function(i)
     {
@@ -32,13 +31,11 @@ function job_import(data)
     job.width = parseInt(data["width"]);
     job.height = parseInt(data["height"]);
     job.skip = parseInt(data["skip"]);
-    job.perobject = parseFloat(data["perobject"]);
-    job.completion = parseFloat(data["completion"]);
     job.blowradius = parseInt(data["blowradius"]);
     job.jobid = parseInt(data["jobid"]);
     job.labels = JSON.parse(data["labels"]);
     job.attributes = JSON.parse(data["attributes"]);
-    job.training = parseInt(data["training"]);
+    job.data = JSON.parse(data["data"]);
 
     console.log("Job configured!");
     console.log("  Slug: " + job.slug);
@@ -47,9 +44,7 @@ function job_import(data)
     console.log("  Width: " + job.width);
     console.log("  Height: " + job.height);
     console.log("  Skip: " + job.skip);
-    console.log("  Per Object: " + job.perobject);
     console.log("  Blow Radius: " + job.blowradius);
-    console.log("  Training: " + job.training);
     console.log("  Job ID: " + job.jobid);
     console.log("  Labels: ");
     for (var i in job.labels)

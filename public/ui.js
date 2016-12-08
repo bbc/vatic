@@ -10,7 +10,7 @@ function ui_build(task, job)
 
     ui_setupbuttons(job, player, tracks);
     ui_setupslider(player);
-    ui_setupsubmit(job, tracks);
+    ui_setupsubmit(task, job, tracks);
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
@@ -251,25 +251,23 @@ function ui_setupclickskip(job, player, tracks, objectui)
 function ui_loadprevious(job, objectui)
 {
     for (var i in job.data) {
-            objectui.injectnewobject(data[i]["label"],
-                                     data[i]["boxes"],
-                                     data[i]["attributes"]);
+            objectui.injectnewobject(job.data[i]["label"],
+                                     job.data[i]["boxes"],
+                                     job.data[i]["attributes"]);
    }
 }
 
-function ui_setupsubmit(job, tracks)
+function ui_setupsubmit(task, job, tracks)
 {
     $("#submitbutton").click(function() {
         if (ui_disabled) return;
-        ui_submit(job, tracks);
+        console.log(job);
+        console.log(tracks.serialize());
+        pybossa.saveTask(task.id, tracks.serialize()).done(
+            function (data) {
+              $("#success").show();
+            });
     });
-}
-
-function ui_submit(job, tracks)
-{
-  // TODO implement for PyBossa
-  console.log(job);
-  console.log(tracks.serialize());
 }
 
 function ui_disable()
