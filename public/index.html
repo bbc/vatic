@@ -100,6 +100,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    var deferred = new Object();
     var task = new Object();
     task.id = 100;
     task.info = {
@@ -124,7 +125,7 @@ $(document).ready(function() {
       preloadslider($("#loadingscreenslider"), function(progress) {
         if (progress == 1) {
           $("#loadingscreen").hide();
-          ui_build(task, job);
+          ui_build(task, deferred, job);
         }
       })
     );

@@ -1,6 +1,6 @@
 var ui_disabled = 0;
 
-function ui_build(task, job)
+function ui_build(task, deferred, job)
 {
     ui_setup(job);
     var videoframe = $("#videoframe");
@@ -10,7 +10,7 @@ function ui_build(task, job)
 
     ui_setupbuttons(job, player, tracks);
     ui_setupslider(player);
-    ui_setupsubmit(task, job, tracks);
+    ui_setupsubmit(task, deferred, job, tracks);
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
@@ -183,7 +183,7 @@ function ui_areboxeshidden()
 function ui_setupslider(player)
 {
     var slider = $("#playerslider");
-
+    slider.children(".bar").width("0%");
     var min = player.job.start;
     var max = player.job.stop;
     player.onupdate.push(function() {
@@ -257,7 +257,7 @@ function ui_loadprevious(job, objectui)
    }
 }
 
-function ui_setupsubmit(task, job, tracks)
+function ui_setupsubmit(task, deferred, job, tracks)
 {
     $("#submitbutton").click(function() {
         if (ui_disabled) return;
@@ -266,6 +266,10 @@ function ui_setupsubmit(task, job, tracks)
         pybossa.saveTask(task.id, tracks.serialize()).done(
             function (data) {
               $("#success").show();
+              $("#videoframe").empty();
+              $("#objectcontainer").empty(); 
+              $("#preloadpit").empty(); 
+              deferred.resolve();
             });
     });
 }
