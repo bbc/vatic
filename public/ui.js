@@ -16,8 +16,8 @@ function ui_build(task, deferred, job)
     ui_loadprevious(job, objectui);
     container = $("#attributes");
     for (var i in job.attributes[0]) {
-      var escapedAttribute = i + "_" + job.attributes[0][i].replace(/ /g, '_') + ".jpg";
-      var html = "<div><img src=\"/static/" + escapedAttribute  + "\"><span>" + job.attributes[0][i] + "</span></div>";
+      var escapedAttribute = job.attributes[0][i].replace(/ /g, '_') + ".jpg";
+      var html = "<div><img src=\"/static/vatic/" + job.slug + "/" + escapedAttribute + "\"><span>" + job.attributes[0][i] + "</span></div>";
       $(html).appendTo(container);
     }
 }

@@ -466,7 +466,7 @@
     if ( !$.isEmptyObject(task) ) {
       $("#success").hide();
       $("#error").hide();
-      var faceTrack = "/static/" + task.info.slug + "/" + task.info.jobid +".json" 
+      var faceTrack = "/static/vatic/" + task.info.slug + "/" + task.info.jobid +".json" 
       $.getJSON( faceTrack, function( data ) {              
         job = job_import(task.info, data);
         preloadvideo(job.start, job.stop, job.frameurl,
@@ -503,7 +503,7 @@
      $("#success").hide();
      $("#error").hide();          
 
-     var faceTrack = "/static/" + task.info.slug + "/" + task.info.jobid +".json" 
+     var faceTrack = "/static/vatic/" + task.info.slug + "/" + task.info.jobid +".json" 
      $.getJSON(faceTrack, function( data ) {
        ui_build(task, deferred, job_import(task.info, data));
      });

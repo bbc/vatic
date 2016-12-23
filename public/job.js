@@ -17,7 +17,7 @@ function Job(data)
     {
         folder1 = parseInt(Math.floor(i / 100));
         folder2 = parseInt(Math.floor(i / 10000));
-        return "/static/frames/" + me.slug + "/" + me.jobid + "/" + parseInt(i) + ".jpg";
+        return "/static/vatic/" + me.slug + "/" + me.jobid + "/" + parseInt(i) + ".jpg";
     }
 }
 
