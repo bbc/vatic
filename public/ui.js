@@ -14,6 +14,12 @@ function ui_build(task, deferred, job)
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
+    container = $("#attributes");
+    for (var i in job.attributes[0]) {
+      var escapedAttribute = i + "_" + job.attributes[0][i].replace(/ /g, '_') + ".jpg";
+      var html = "<div><img src=\"/static/" + escapedAttribute  + "\"><span>" + job.attributes[0][i] + "</span></div>";
+      $(html).appendTo(container);
+    }
 }
 
 function ui_setup(job)

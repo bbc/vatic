@@ -17,25 +17,25 @@ function Job(data)
     {
         folder1 = parseInt(Math.floor(i / 100));
         folder2 = parseInt(Math.floor(i / 10000));
-        return "/static/frames/" + me.slug + "/" + me.jobid + 
-            "/" + folder2 + "/" + folder1 + "/" + parseInt(i) + ".jpg";
+        return "/static/frames/" + me.slug + "/" + me.jobid + "/" + parseInt(i) + ".jpg";
     }
 }
 
-function job_import(data)
+function job_import(info, data)
 {
     var job = new Job();
-    job.slug = data["slug"];
-    job.start = parseInt(data["start"]);
-    job.stop = parseInt(data["stop"]);
-    job.width = parseInt(data["width"]);
-    job.height = parseInt(data["height"]);
-    job.skip = parseInt(data["skip"]);
-    job.blowradius = parseInt(data["blowradius"]);
-    job.jobid = parseInt(data["jobid"]);
-    job.labels = JSON.parse(data["labels"]);
-    job.attributes = JSON.parse(data["attributes"]);
-    job.data = JSON.parse(data["data"]);
+    job.slug = info["slug"];
+    job.start = parseInt(info["start"]);
+    job.stop = parseInt(info["stop"]);
+    job.width = parseInt(info["width"]);
+    job.height = parseInt(info["height"]);
+    job.skip = parseInt(info["skip"]);
+    job.blowradius = parseInt(info["blowradius"]);
+    job.jobid = info["jobid"];
+    job.labels = JSON.parse(info["labels"]);
+    job.attributes = JSON.parse(info["attributes"]);
+    job.data = data;
+
 
     console.log("Job configured!");
     console.log("  Slug: " + job.slug);

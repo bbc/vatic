@@ -50,6 +50,11 @@
       </div>
     </div>
     <div class="row">
+      <div id="attributes" class="col-md-12">
+
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12">
 	      <button class='btn' id='openadvancedoptions'>Options</button>
         <div id='advancedoptions'>
@@ -106,20 +111,21 @@ $(document).ready(function() {
     task.info = {
       "jobid":"100",
       "slug":"slug",
-      "start":"0",
+      "start":"1",
       "stop":"100",
       "width":"704",
       "height":"576",
       "skip":"25",
       "blowradius":"5", // TODO remove later?
-      "labels":"[\"cat\",\"dog\",\"fish\"]",
-      "attributes":"[[\"fat\", \"thin\"],[\"happy\",\"sad\"],[\"big\",\"little\"]]",
-      "data":"[{\"label\":0,\"attributes\":[[0,0,100]],\"boxes\":[[10.0,10.0,30.0,30.0,0,false,false],[100.0,100.0,130.0,130.0,25,false,false],[100.0,100.0,130.0,130.0,50,false,false],[100.0,100.0,130.0,130.0,75,false,false]]}]"
+      "labels":"[\"face\"]",
+      "attributes":"[[\"Jeremy PAXMAN\", \"David CAMERON\", \"Ed MILLIBAND\"]]"
     }
+    var task_data =
+      [{label:0,attributes:[],boxes:[[10,10,30,30,1,true,false],[100,100,130,130,26,false,false],[200,200,230,230,51,false,false],[100,100,130,130,76,true,false]]}];
 
     console.log("Booting...");
 
-    job = job_import(task.info);
+    job = job_import(task.info, task_data);
 
     preloadvideo(job.start, job.stop, job.frameurl,
       preloadslider($("#loadingscreenslider"), function(progress) {
