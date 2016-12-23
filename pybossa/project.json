@@ -1,0 +1,6 @@
+{
+    "name": "Facerec",
+    "short_name": "facerec",
+    "description": "Image pattern recognition",
+    "question": "Do you see a real human face in this photo?"
+}
