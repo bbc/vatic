@@ -713,7 +713,7 @@ function Track(id, player, color, position)
                 });
 
             this.handle.resizable({
-                handles: "n,w,s,e",
+                handles: "n,w,s,e,se",
                 autoHide: true,
                 ghost: true, /* need to fix this bug soon */
                 start: function() {
