@@ -12,6 +12,7 @@ function Job(data)
     this.thisid = null;
     this.labels = null;
     this.data = null;
+    this.job = null;
 
     this.frameurl = function(i)
     {

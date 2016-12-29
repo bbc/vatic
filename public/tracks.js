@@ -157,6 +157,7 @@ function BoxDrawer(container)
             this.drawing = true;
 
             this.handle = $('<div class="boundingbox"><div>');
+            this.handle.draggable();
             this.updatedrawing(xc, yc);
             this.container.append(this.handle);
 
@@ -284,7 +285,7 @@ function TrackCollection(player, job)
      */
     this.add = function(frame, position, color)
     {
-        var track = new Track(this.player, color, position);
+        var track = new Track(this.tracks.length, this.player, color, position);
         this.tracks.push(track);
 
         console.log("Added new track");
@@ -415,10 +416,11 @@ function TrackCollection(player, job)
 /*
  * A track class.
  */
-function Track(player, color, position)
+function Track(id, player, color, position)
 {
     var me = this;
 
+    this.id = id;
     this.journal = new Journal(player.job.start, player.job.blowradius);
     this.attributejournals = {};
     this.label = null;
@@ -699,6 +701,7 @@ function Track(player, color, position)
         if (this.handle == null)
         {
             this.handle = $('<div class="boundingbox"><div class="boundingboxtext"></div></div>');
+            this.handle.draggable();
             this.handle.css("border-color", this.color);
             var fill = $('<div class="fill"></div>').appendTo(this.handle);
             fill.css("background-color", this.color);
@@ -731,20 +734,6 @@ function Track(player, color, position)
                 resize: function() {
                     me.highlight(true);
                 }
-            });
-
-            this.handle.draggable({
-                start: function() {
-                    player.pause();
-                    me.notifystartupdate();
-                    //me.triggerinteract();
-                },
-                stop: function() { 
-                    me.fixposition();
-                    me.recordposition();                
-                    me.notifyupdate();
-                },
-                cancel: ".boundingboxtext"
             });
 
             this.handle.mouseover(function() {
@@ -780,10 +769,25 @@ function Track(player, color, position)
         if (position.outside)
         {
             this.handle.hide();
-            return;
-        }
+            if(this.player.job.selected == this.id) {
+              this.handle.removeClass("ui-selected");
+              $(".face-label").removeClass("attribute-selected");
 
-        this.handle.show();
+              this.player.job.selected = null;
+            }
+            return;
+        } else {
+            this.handle.show();
+            if(this.player.job.selected == this.id) {
+              this.handle.addClass("ui-selected");
+              $(".face-label").removeClass("attribute-selected");
+              for(i in this.player.job.attributes[this.label]) {
+                if(this.estimateattribute(i, this.player.frame)) {
+                  $("#face-label-" + i).addClass("attribute-selected");
+                }
+              }
+            }
+        }
         
         if (position.occluded)
         {

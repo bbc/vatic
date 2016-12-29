@@ -322,6 +322,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         obj.updatecheckboxes();
         obj.updateboxtext();
         this.counter++;
+        this.objects.push(obj);
 
         return obj;
     }
@@ -335,16 +336,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.drawer.onstopdraw.push(function(position) {
             me.stopdrawing(position);
         });
-
-        var html = "<p>In this video, please track all of these objects:</p>";
-        html += "<ul>";
-        for (var i in this.job.labels)
-        {
-            html += "<li>" + this.job.labels[i] + "</li>";
-        }
-        html += "</ul>";
-
-        this.instructions = $(html).appendTo(this.container);
     }
 
     this.disable = function()
@@ -448,15 +439,26 @@ function TrackObject(job, player, container, color)
         });
 
         this.track.oninteract.push(function() {
-            var pos = me.handle.position().top + me.container.scrollTop() - 30;
-            pos = pos - me.handle.height();
-            me.container.stop().animate({scrollTop: pos}, 750);
-
-            me.toggletooltip();
+            console.log("ONINTERACT " + me.id + " " + me.player.frame);
+            var oldtrack = me.job.selected;
+            $(".face-label").removeClass("attribute-selected");
+            if(oldtrack == null) {
+            } else {
+              me.tracks.tracks[parseInt(oldtrack)].handle.removeClass("ui-selected");
+            }
+            me.job.selected = me.id;
+            for(i in me.job.attributes[me.track.label]) {
+              attributeSelected =  me.track.estimateattribute(i, me.player.frame);
+              if(attributeSelected) {
+                $("#face-label-" + i).addClass("attribute-selected"); 
+              }
+            }
+            me.track.handle.addClass("ui-selected");
         });
 
         this.track.onupdate.push(function() {
-            me.hidetooltip();
+            console.log("ONUPDATE " + me.id);
+            //me.hidetooltip();
         });
 
         this.track.notifyupdate();
@@ -547,7 +549,6 @@ function TrackObject(job, player, container, color)
 
         this.headerdetails = $("<div style='float:right;'></div>").appendTo(this.handle);
         this.header = $("<p class='trackobjectheader'><strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong></p>").appendTo(this.handle).hide().slideDown();
-        //this.opencloseicon = $('<div class="ui-icon ui-icon-triangle-1-e"></div>').prependTo(this.header);
         this.details = $("<div class='trackobjectdetails'></div>").appendTo(this.handle).hide();
 
         this.setupdetails();
@@ -598,17 +599,27 @@ function TrackObject(job, player, container, color)
 
         for (var i in this.job.attributes[this.track.label])
         {
-            this.details.append("<input type='checkbox' id='trackobject" + this.id + "attribute" + i + "'> <label for='trackobject" + this.id + "attribute" + i +"'>" + this.job.attributes[this.track.label][i] + "</label><br>");
+            this.details.append("<input type='radio' name='attribute" + this.track.label + "' value='" + this.job.attributes[this.track.label][i] + "' id='trackobject" + this.id + "attribute" + i + "'><label for='trackobject" + this.id + "attribute" + i +"'>" + this.job.attributes[this.track.label][i] + "</label><br>");
 
             // create a closure on attributeid
             (function(attributeid) {
 
                 $("#trackobject" + me.id + "attribute" + i).click(function() {
-                    me.player.pause();
 
+                    me.player.pause();
+                    for(var j in me.job.attributes[me.track.label]) {
+                      me.track.setattribute(j, false);
+                    }
                     var checked = $(this).is(":checked");
-		    console.log("setattribute " + attributeid + " " + checked); 
+             		    console.log("setattribute " + attributeid + " " + checked); 
                     me.track.setattribute(attributeid, checked ? true : false);
+                    if(me.job.selected == me.id) {
+                      if(checked) {
+                        $("#face-label-" + attributeid).addClass("attribute-selected"); 
+                      } else {
+                        $("#face-label-" + attributeid).removeClass("attribute-selected"); 
+                      }
+                    }
                     me.track.notifyupdate();
 
                     me.updateboxtext();
@@ -618,7 +629,7 @@ function TrackObject(job, player, container, color)
         }
 
 
-        $("#trackobject" + this.id + "lost").click(function() {
+        $("#trackobject" + this.id + "ost").click(function() {
             me.player.pause();
 
             var outside = $(this).is(":checked");
@@ -637,9 +648,9 @@ function TrackObject(job, player, container, color)
             me.updatecheckboxes();
         });
 
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-unlocked' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-image' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-lock' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-picture' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
 
         $("#trackobject" + this.id + "delete").click(function() {
             if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
@@ -1003,11 +1014,32 @@ function ui_build(task, deferred, job)
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
+    ui_setup_face_labels(job, tracks, objectui)
+}
+function ui_setup_face_labels(job, tracks, objectui) {
     container = $("#attributes");
     for (var i in job.attributes[0]) {
       var escapedAttribute = job.attributes[0][i].replace(/ /g, '_') + ".jpg";
-      var html = "<div><img src=\"/static/vatic/" + job.slug + "/" + escapedAttribute + "\"><span>" + job.attributes[0][i] + "</span></div>";
-      $(html).appendTo(container);
+      var html = "<div id=\"face-label-" + i + "\" class=\"face-label\" data-attribute=\"" + i + "\">" + job.attributes[0][i] + "<br/><img src=\"/static/vatic/" + job.slug + "/labels/" + escapedAttribute + "\"></div>";
+      
+      $(html).appendTo(container).click(function() {
+        console.log("Onclick " + $(this).attr('data-attribute') + " " + job.selected);
+        if(job.selected != null) {
+          attribute = parseInt($(this).attr('data-attribute'));
+          object = parseInt(job.selected);
+          $(".face-label").removeClass("attribute-selected");
+          $(this).addClass("attribute-selected");
+          track = tracks.tracks[object];
+          for(j in job.attributes[0]) {
+            $("#trackobject" + track.id + "attribute" + j).prop('checked',false);
+            track.setattribute(j, false);
+          }
+          track.setattribute(attribute, true);
+          $("#trackobject" + track.id + "attribute" + attribute).prop('checked', true);
+          track.notifyupdate();
+          objectui.objects[object].updateboxtext();
+        }
+      });
     }
 }
 
@@ -1026,8 +1058,13 @@ function ui_setup(job)
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
 
     $("#openadvancedoptions").click(function() {
-      $(this).remove();
+      $(this).hide();
       $("#advancedoptions").show();
+    });
+
+    $("#closeadvancedoptions").click(function() {
+      $("#advancedoptions").hide();
+      $("#openadvancedoptions").show();
     });
 
     $("#advancedoptions").hide();
@@ -1050,11 +1087,13 @@ function ui_setupbuttons(job, player, tracks)
     });
 
     player.onplay.push(function() {
-        $("#playbutton").text("Pause");
+        $("#playbutton").children().removeClass("glyphicon-play");
+        $("#playbutton").children().addClass("glyphicon-pause");
     });
 
     player.onpause.push(function() {
-        $("#playbutton").text("Play");
+        $("#playbutton").children().removeClass("glyphicon-pause");
+        $("#playbutton").children().addClass("glyphicon-play");
     });
 
     player.onupdate.push(function() {
@@ -1178,12 +1217,12 @@ function ui_areboxeshidden()
 function ui_setupslider(player)
 {
     var slider = $("#playerslider");
-    slider.children(".bar").width("0%");
+    slider.children(".progress-bar").width("0%");
     var min = player.job.start;
     var max = player.job.stop;
     player.onupdate.push(function() {
 	var percent = ((player.frame - min) / max) * 100;
-        slider.children(".bar").width(percent + "%");
+        slider.children(".progress-bar").width(percent + "%");
     });
 }
 
@@ -1263,7 +1302,7 @@ function ui_setupsubmit(task, deferred, job, tracks)
               $("#success").show();
               $("#videoframe").empty();
               $("#objectcontainer").empty(); 
-              $("#preloadpit").empty(); 
+              $("#attributes").empty(); 
               deferred.resolve();
             });
     });
@@ -1316,6 +1355,7 @@ function Job(data)
     this.thisid = null;
     this.labels = null;
     this.data = null;
+    this.job = null;
 
     this.frameurl = function(i)
     {
@@ -1525,6 +1565,7 @@ function BoxDrawer(container)
             this.drawing = true;
 
             this.handle = $('<div class="boundingbox"><div>');
+            this.handle.draggable();
             this.updatedrawing(xc, yc);
             this.container.append(this.handle);
 
@@ -1652,7 +1693,7 @@ function TrackCollection(player, job)
      */
     this.add = function(frame, position, color)
     {
-        var track = new Track(this.player, color, position);
+        var track = new Track(this.tracks.length, this.player, color, position);
         this.tracks.push(track);
 
         console.log("Added new track");
@@ -1783,10 +1824,11 @@ function TrackCollection(player, job)
 /*
  * A track class.
  */
-function Track(player, color, position)
+function Track(id, player, color, position)
 {
     var me = this;
 
+    this.id = id;
     this.journal = new Journal(player.job.start, player.job.blowradius);
     this.attributejournals = {};
     this.label = null;
@@ -2067,6 +2109,7 @@ function Track(player, color, position)
         if (this.handle == null)
         {
             this.handle = $('<div class="boundingbox"><div class="boundingboxtext"></div></div>');
+            this.handle.draggable();
             this.handle.css("border-color", this.color);
             var fill = $('<div class="fill"></div>').appendTo(this.handle);
             fill.css("background-color", this.color);
@@ -2099,20 +2142,6 @@ function Track(player, color, position)
                 resize: function() {
                     me.highlight(true);
                 }
-            });
-
-            this.handle.draggable({
-                start: function() {
-                    player.pause();
-                    me.notifystartupdate();
-                    //me.triggerinteract();
-                },
-                stop: function() { 
-                    me.fixposition();
-                    me.recordposition();                
-                    me.notifyupdate();
-                },
-                cancel: ".boundingboxtext"
             });
 
             this.handle.mouseover(function() {
@@ -2148,10 +2177,25 @@ function Track(player, color, position)
         if (position.outside)
         {
             this.handle.hide();
-            return;
-        }
+            if(this.player.job.selected == this.id) {
+              this.handle.removeClass("ui-selected");
+              $(".face-label").removeClass("attribute-selected");
 
-        this.handle.show();
+              this.player.job.selected = null;
+            }
+            return;
+        } else {
+            this.handle.show();
+            if(this.player.job.selected == this.id) {
+              this.handle.addClass("ui-selected");
+              $(".face-label").removeClass("attribute-selected");
+              for(i in this.player.job.attributes[this.label]) {
+                if(this.estimateattribute(i, this.player.frame)) {
+                  $("#face-label-" + i).addClass("attribute-selected");
+                }
+              }
+            }
+        }
         
         if (position.occluded)
         {

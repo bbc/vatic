@@ -125,6 +125,7 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         obj.updatecheckboxes();
         obj.updateboxtext();
         this.counter++;
+        this.objects.push(obj);
 
         return obj;
     }
@@ -138,16 +139,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.drawer.onstopdraw.push(function(position) {
             me.stopdrawing(position);
         });
-
-        var html = "<p>In this video, please track all of these objects:</p>";
-        html += "<ul>";
-        for (var i in this.job.labels)
-        {
-            html += "<li>" + this.job.labels[i] + "</li>";
-        }
-        html += "</ul>";
-
-        this.instructions = $(html).appendTo(this.container);
     }
 
     this.disable = function()
@@ -251,15 +242,26 @@ function TrackObject(job, player, container, color)
         });
 
         this.track.oninteract.push(function() {
-            var pos = me.handle.position().top + me.container.scrollTop() - 30;
-            pos = pos - me.handle.height();
-            me.container.stop().animate({scrollTop: pos}, 750);
-
-            me.toggletooltip();
+            console.log("ONINTERACT " + me.id + " " + me.player.frame);
+            var oldtrack = me.job.selected;
+            $(".face-label").removeClass("attribute-selected");
+            if(oldtrack == null) {
+            } else {
+              me.tracks.tracks[parseInt(oldtrack)].handle.removeClass("ui-selected");
+            }
+            me.job.selected = me.id;
+            for(i in me.job.attributes[me.track.label]) {
+              attributeSelected =  me.track.estimateattribute(i, me.player.frame);
+              if(attributeSelected) {
+                $("#face-label-" + i).addClass("attribute-selected"); 
+              }
+            }
+            me.track.handle.addClass("ui-selected");
         });
 
         this.track.onupdate.push(function() {
-            me.hidetooltip();
+            console.log("ONUPDATE " + me.id);
+            //me.hidetooltip();
         });
 
         this.track.notifyupdate();
@@ -350,7 +352,6 @@ function TrackObject(job, player, container, color)
 
         this.headerdetails = $("<div style='float:right;'></div>").appendTo(this.handle);
         this.header = $("<p class='trackobjectheader'><strong>" + this.job.labels[this.label] + " " + (this.id + 1) + "</strong></p>").appendTo(this.handle).hide().slideDown();
-        //this.opencloseicon = $('<div class="ui-icon ui-icon-triangle-1-e"></div>').prependTo(this.header);
         this.details = $("<div class='trackobjectdetails'></div>").appendTo(this.handle).hide();
 
         this.setupdetails();
@@ -401,17 +402,27 @@ function TrackObject(job, player, container, color)
 
         for (var i in this.job.attributes[this.track.label])
         {
-            this.details.append("<input type='checkbox' id='trackobject" + this.id + "attribute" + i + "'> <label for='trackobject" + this.id + "attribute" + i +"'>" + this.job.attributes[this.track.label][i] + "</label><br>");
+            this.details.append("<input type='radio' name='attribute" + this.track.label + "' value='" + this.job.attributes[this.track.label][i] + "' id='trackobject" + this.id + "attribute" + i + "'><label for='trackobject" + this.id + "attribute" + i +"'>" + this.job.attributes[this.track.label][i] + "</label><br>");
 
             // create a closure on attributeid
             (function(attributeid) {
 
                 $("#trackobject" + me.id + "attribute" + i).click(function() {
-                    me.player.pause();
 
+                    me.player.pause();
+                    for(var j in me.job.attributes[me.track.label]) {
+                      me.track.setattribute(j, false);
+                    }
                     var checked = $(this).is(":checked");
-		    console.log("setattribute " + attributeid + " " + checked); 
+             		    console.log("setattribute " + attributeid + " " + checked); 
                     me.track.setattribute(attributeid, checked ? true : false);
+                    if(me.job.selected == me.id) {
+                      if(checked) {
+                        $("#face-label-" + attributeid).addClass("attribute-selected"); 
+                      } else {
+                        $("#face-label-" + attributeid).removeClass("attribute-selected"); 
+                      }
+                    }
                     me.track.notifyupdate();
 
                     me.updateboxtext();
@@ -421,7 +432,7 @@ function TrackObject(job, player, container, color)
         }
 
 
-        $("#trackobject" + this.id + "lost").click(function() {
+        $("#trackobject" + this.id + "ost").click(function() {
             me.player.pause();
 
             var outside = $(this).is(":checked");
@@ -440,9 +451,9 @@ function TrackObject(job, player, container, color)
             me.updatecheckboxes();
         });
 
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-unlocked' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
-        this.headerdetails.append("<div style='float:right;'><div class='ui-icon ui-icon-image' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-trash' id='trackobject" + this.id + "delete' title='Delete this track'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-lock' id='trackobject" + this.id + "lock' title='Lock/unlock to prevent modifications'></div></div>");
+        this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-picture' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
 
         $("#trackobject" + this.id + "delete").click(function() {
             if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))

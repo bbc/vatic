@@ -14,11 +14,32 @@ function ui_build(task, deferred, job)
     ui_setupclickskip(job, player, tracks, objectui);
     ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
+    ui_setup_face_labels(job, tracks, objectui)
+}
+function ui_setup_face_labels(job, tracks, objectui) {
     container = $("#attributes");
     for (var i in job.attributes[0]) {
       var escapedAttribute = job.attributes[0][i].replace(/ /g, '_') + ".jpg";
-      var html = "<div><img src=\"/static/vatic/" + job.slug + "/" + escapedAttribute + "\"><span>" + job.attributes[0][i] + "</span></div>";
-      $(html).appendTo(container);
+      var html = "<div id=\"face-label-" + i + "\" class=\"face-label\" data-attribute=\"" + i + "\">" + job.attributes[0][i] + "<br/><img src=\"/static/vatic/" + job.slug + "/labels/" + escapedAttribute + "\"></div>";
+      
+      $(html).appendTo(container).click(function() {
+        console.log("Onclick " + $(this).attr('data-attribute') + " " + job.selected);
+        if(job.selected != null) {
+          attribute = parseInt($(this).attr('data-attribute'));
+          object = parseInt(job.selected);
+          $(".face-label").removeClass("attribute-selected");
+          $(this).addClass("attribute-selected");
+          track = tracks.tracks[object];
+          for(j in job.attributes[0]) {
+            $("#trackobject" + track.id + "attribute" + j).prop('checked',false);
+            track.setattribute(j, false);
+          }
+          track.setattribute(attribute, true);
+          $("#trackobject" + track.id + "attribute" + attribute).prop('checked', true);
+          track.notifyupdate();
+          objectui.objects[object].updateboxtext();
+        }
+      });
     }
 }
 
@@ -37,8 +58,13 @@ function ui_setup(job)
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
 
     $("#openadvancedoptions").click(function() {
-      $(this).remove();
+      $(this).hide();
       $("#advancedoptions").show();
+    });
+
+    $("#closeadvancedoptions").click(function() {
+      $("#advancedoptions").hide();
+      $("#openadvancedoptions").show();
     });
 
     $("#advancedoptions").hide();
@@ -61,11 +87,13 @@ function ui_setupbuttons(job, player, tracks)
     });
 
     player.onplay.push(function() {
-        $("#playbutton").text("Pause");
+        $("#playbutton").children().removeClass("glyphicon-play");
+        $("#playbutton").children().addClass("glyphicon-pause");
     });
 
     player.onpause.push(function() {
-        $("#playbutton").text("Play");
+        $("#playbutton").children().removeClass("glyphicon-pause");
+        $("#playbutton").children().addClass("glyphicon-play");
     });
 
     player.onupdate.push(function() {
@@ -189,12 +217,12 @@ function ui_areboxeshidden()
 function ui_setupslider(player)
 {
     var slider = $("#playerslider");
-    slider.children(".bar").width("0%");
+    slider.children(".progress-bar").width("0%");
     var min = player.job.start;
     var max = player.job.stop;
     player.onupdate.push(function() {
 	var percent = ((player.frame - min) / max) * 100;
-        slider.children(".bar").width(percent + "%");
+        slider.children(".progress-bar").width(percent + "%");
     });
 }
 
@@ -274,7 +302,7 @@ function ui_setupsubmit(task, deferred, job, tracks)
               $("#success").show();
               $("#videoframe").empty();
               $("#objectcontainer").empty(); 
-              $("#preloadpit").empty(); 
+              $("#attributes").empty(); 
               deferred.resolve();
             });
     });
