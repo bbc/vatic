@@ -108,7 +108,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
                                this.currentcolor[0]);
         for (var i = 1; i < path.length; i++)
         {
-            console.log("Mark " + i + " " + path.length)
             track.journal.mark(path[i][4], convert(path[i]));
         }
 
@@ -118,7 +117,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         for (var i = 0; i < attributes.length; i++)
         {
             track.attributejournals[attributes[i][0]].mark(attributes[i][1], attributes[i][2]);
-            console.log("Injecting attribute " + attributes[i][0] + " at frame " + attributes[i][1] + " to " + attributes[i][2]);
         }
 
         obj.statefolddown();
@@ -139,6 +137,16 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.drawer.onstopdraw.push(function(position) {
             me.stopdrawing(position);
         });
+    }
+
+    this.getobject = function(id) {
+      for (var i in this.objects) {
+        if(this.objects[i].id == id) {
+          return this.objects[i];
+        }
+      }
+      console.log("Error didn't find object with id " + id);
+      return null;
     }
 
     this.disable = function()
@@ -257,6 +265,24 @@ function TrackObject(job, player, container, color)
               }
             }
             me.track.handle.addClass("ui-selected");
+            $("#hideobjectbutton").prop('disabled', false);
+            $("#occludeobjectbutton").prop('disabled', false);
+            $("#deleteobjectbutton").prop('disabled', false);
+
+            if(me.track.getoutside()) {
+              $("#hideobjectbutton").children().addClass("glyphicon-plus");
+              $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+            } else {
+              $("#hideobjectbutton").children().addClass("glyphicon-remove");
+              $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+            } 
+            if(me.track.getocclusion()) {
+              $("#occludeobjectbutton").children().addClass("glyphicon-eye-close");
+              $("#occludeobjectbutton").children().removeClass("glyphicon-eye-open");
+            } else {
+              $("#occludeobjectbutton").children().addClass("glyphicon-eye-open");
+              $("#occludeobjectbutton").children().removeClass("glyphicon-eye-close");
+            }
         });
 
         this.track.onupdate.push(function() {
@@ -432,7 +458,7 @@ function TrackObject(job, player, container, color)
         }
 
 
-        $("#trackobject" + this.id + "ost").click(function() {
+        $("#trackobject" + this.id + "lost").click(function() {
             me.player.pause();
 
             var outside = $(this).is(":checked");
@@ -456,10 +482,10 @@ function TrackObject(job, player, container, color)
         this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-picture' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
 
         $("#trackobject" + this.id + "delete").click(function() {
-            if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
-            {
+            /*if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
+            {*/
                 me.remove();
-            }
+            /*}*/
         });
 
         $("#trackobject" + this.id + "lock").click(function() {

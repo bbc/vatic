@@ -8,7 +8,7 @@ function ui_build(task, deferred, job)
     var tracks = new TrackCollection(player, job);
     var objectui = new TrackObjectUI($("#newobjectbutton"), $("#objectcontainer"), videoframe, job, player, tracks);
 
-    ui_setupbuttons(job, player, tracks);
+    ui_setupbuttons(job, player, tracks, objectui);
     ui_setupslider(player);
     ui_setupsubmit(task, deferred, job, tracks);
     ui_setupclickskip(job, player, tracks, objectui);
@@ -37,7 +37,7 @@ function ui_setup_face_labels(job, tracks, objectui) {
           track.setattribute(attribute, true);
           $("#trackobject" + track.id + "attribute" + attribute).prop('checked', true);
           track.notifyupdate();
-          objectui.objects[object].updateboxtext();
+          objectui.getobject(object).updateboxtext();
         }
       });
     }
@@ -72,7 +72,7 @@ function ui_setup(job)
 
 }
 
-function ui_setupbuttons(job, player, tracks)
+function ui_setupbuttons(job, player, tracks, objectui)
 {
     $("#playbutton").click(function() {
         if (!$(this).attr("disabled")) {
@@ -80,12 +80,66 @@ function ui_setupbuttons(job, player, tracks)
         }
     });
 
-    $("#rewindbutton").click(function() {
+    $("#rewindstartbutton").click(function() {
         if (ui_disabled) return;
         player.pause();
         player.seek(player.job.start);
     });
 
+    $("#rewindbutton").click(function() {
+        if (ui_disabled) return;
+        player.pause();
+        player.seek(player.frame - job.skip);
+    });
+
+    $("#hideobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          track = tracks.tracks[object];
+          if(track.getoutside()) {
+            track.setoutside(false);
+            $("#trackobject" + track.id + "lost").prop('checked',false);
+            $("#hideobjectbutton").children().addClass("glyphicon-remove");
+            $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+          } else {
+            track.setoutside(true);
+            $("#hideobjectbutton").children().addClass("glyphicon-plus");
+            $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+            $("#trackobject" + track.id + "lost").prop('checked',true);
+          } 
+          track.notifyupdate();
+        }
+    });
+    $("#occludeobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          track = tracks.tracks[object];
+          if(track.getocclusion()) {
+            track.setocclusion(false);
+            $("#trackobject" + track.id + "occluded").prop('checked',false);
+            $("#occludeobjectbutton").children().addClass("glyphicon-eye-open");
+            $("#occludeobjectbutton").children().removeClass("glyphicon-eye-close");
+          } else {
+            track.setocclusion(true);
+            $("#trackobject" + track.id + "occluded").prop('checked',true);
+            $("#occludeobjectbutton").children().removeClass("glyphicon-eye-open");
+            $("#occludeobjectbutton").children().addClass("glyphicon-eye-close");
+          } 
+          track.notifyupdate();
+        }
+    });
+
+    $("#deleteobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          objectui.getobject(object).remove();
+          job.selected = null;
+          $(".face-label").removeClass("attribute-selected");
+          $("#hideobjectbutton").prop('disabled',true);
+          $("#occludeobjectbutton").prop('disabled',true);
+          $("#deleteobjectbutton").prop('disabled',true);
+      }
+    });
     player.onplay.push(function() {
         $("#playbutton").children().removeClass("glyphicon-play");
         $("#playbutton").children().addClass("glyphicon-pause");
@@ -104,8 +158,10 @@ function ui_setupbuttons(job, player, tracks)
         }
 
         if (player.frame == player.job.start) {
+            $("#rewindstartbutton").attr("disabled", true);
             $("#rewindbutton").attr("disabled", true);
         } else if ($("#rewindbutton").attr("disabled")) {
+            $("#rewindstartbutton").removeAttr("disabled");
             $("#rewindbutton").removeAttr("disabled");
         }
     });
@@ -156,13 +212,17 @@ function ui_setupkeyboardshortcuts(job, player)
 
         var keycode = e.keyCode ? e.keyCode : e.which;
         
-        if (keycode == 32 || keycode == 112 || keycode == 116 || keycode == 98)
+        if (keycode == 39)
         {
             $("#playbutton").click();
         }
-        if (keycode == 114)
+        if (keycode == 37)
         {
             $("#rewindbutton").click();
+        }
+        if (keycode == 46) 
+        {
+            $("#deleteobjectbutton").click();
         }
         else if (keycode == 110)
         {

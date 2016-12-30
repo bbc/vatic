@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <style>
+html { overflow: hidden; }
 .navbar-default {
       background-color: #546e7a;
 }
@@ -217,24 +218,26 @@
 }
 
 </style>
-<div class="row">
-  <div style="height: 75px">
+<div>
+  <div style="height: 75px; width:100%; position: fixed; top: 0; left: 0; z-index:1050">
     <div id="success" class="alert alert-success" style="display:none;">
-      <a class="close">×</a>
+      <a class="close" onclick='$("#success").hide()'>&times;</a>
       <strong>Well done!</strong> Your answer has been saved
     </div>
     <div id="loading" class="alert alert-info" style="display:none;">
-      <a class="close">×</a>
+      <a class="close" onclick='$("#loading").hide()'>&times;</a>
       Loading next task...
       <div class="progress" id='loading-progress'>
         <div class="progress-bar progress-bar-striped active"></div>
       </div>
     </div>
     <div id="taskcompleted" class="alert alert-info" style="display:none;">
+      <a class="close" onclick='$("#taskcompleted").hide()'>&times;</a>
       <strong>The task has been completed!</strong>
       Thanks a lot!
     </div>
     <div id="finish" class="alert alert-success" style="display:none;">
+      <a class="close" onclick='$("#finish").hide()'>&times;</a>
       <strong>Congratulations!</strong>
       You have participated in all available tasks!
       <br/>
@@ -245,7 +248,7 @@
       </div>
       </div>
       <div id="error" class="alert alert-error" style="display:none;">
-        <a class="close">×</a>
+        <a class="close" onclick='$("#error").hide()'>&times;</a>
         <strong>Error!</strong>
         Something went wrong, please contact the site administrators
       </div>
@@ -267,9 +270,27 @@
       <div class="progress" id='playerslider'>
         <div class="progress-bar progress-bar-striped active"></div>
       </div>
-      <button class='btn' id='rewindbutton' disabled><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
-      <button class='btn' id='playbutton'><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
-      <button class='btn' id='newobjectbutton'>New Object</button>
+        <button class='btn' id='rewindstartbutton' disabled title="rewind to start">
+          <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='rewindbutton' disabled title="rewind / ←">
+          <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='playbutton' title="play / →">
+          <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='newobjectbutton' title="new object / .">
+          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='occludeobjectbutton' title="toggle occluded" disabled>
+          <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='hideobjectbutton' title="toggle onscreen" disabled>
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </button>
+        <button class='btn' id='deleteobjectbutton' title="delete / Del" disabled>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+        </button>
       <button id='submitbutton' class='btn btn-primary'>Submit</button>
     </div>
   </div>

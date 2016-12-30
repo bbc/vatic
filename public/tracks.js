@@ -77,6 +77,7 @@ function BoxDrawer(container)
      */
     this.click = function(xc, yc)
     {
+      console.log("this.click")
         if (this.enabled)
         {
             if (!this.drawing)
@@ -210,12 +211,14 @@ function BoxDrawer(container)
 
     var respondtoclick = function(e) {
         var offset = container.offset();
-        me.click(e.pageX - offset.left, e.pageY - offset.top);
+        console.log("respondtoclick " + offset.left + " " + offset.top + " " + $(window).scrollTop());
+        me.click(e.pageX - offset.left, e.pageY - offset.top - $(window).scrollTop());
     };
 
     var ignoremouseup = false;
 
     container.mousedown(function(e) {
+        console.log("container.mousedown");
         ignoremouseup = true;
         window.setTimeout(function() { 
             ignoremouseup = false;
@@ -225,6 +228,7 @@ function BoxDrawer(container)
     });
 
     container.mouseup(function(e) {
+      console.log("container.mouseup");
         if (!ignoremouseup)
         {
             respondtoclick(e);
@@ -232,6 +236,7 @@ function BoxDrawer(container)
     });
 
     container.click(function(e) {
+        console.log("container.click");
         e.stopPropagation();
     });
 
@@ -245,6 +250,7 @@ function BoxDrawer(container)
     });
 
     $("body").click(function(e) {
+        console.log("body.click")
         me.canceldrawing();
     });
 }
@@ -558,6 +564,10 @@ function Track(id, player, color, position)
         }
     }
 
+    this.getocclusion = function() {
+        var pos = this.estimate(this.player.frame);
+        return pos.occluded;
+    }
     /*
      * Sets the current position as occluded.
      */
@@ -584,6 +594,10 @@ function Track(id, player, color, position)
         this.draw(this.player.frame, pos);
     }
 
+    this.getoutside = function() {
+        var pos = this.estimate(this.player.frame);
+        return pos.outside;
+    }
     /*
      * Sets the current position as outside.
      */
@@ -701,7 +715,23 @@ function Track(id, player, color, position)
         if (this.handle == null)
         {
             this.handle = $('<div class="boundingbox"><div class="boundingboxtext"></div></div>');
-            this.handle.draggable();
+            this.handle.draggable({
+                start: function() {
+                    player.pause();
+                    me.notifystartupdate();
+                    //me.triggerinteract();
+                    for (var i in me.onmouseover)
+                    {
+                        me.onmouseover[i]();
+                    }
+                },
+                stop: function() {
+                    me.fixposition();
+                    me.recordposition();
+                    me.notifyupdate();
+                    me.highlight(false);
+                }
+            });
             this.handle.css("border-color", this.color);
             var fill = $('<div class="fill"></div>').appendTo(this.handle);
             fill.css("background-color", this.color);
@@ -757,6 +787,7 @@ function Track(id, player, color, position)
             });
 
             this.handle.click(function() {
+                console.log("handle.click")
                 me.triggerinteract();
             });
         }
@@ -772,6 +803,9 @@ function Track(id, player, color, position)
             if(this.player.job.selected == this.id) {
               this.handle.removeClass("ui-selected");
               $(".face-label").removeClass("attribute-selected");
+              $("#hideobjectbutton").prop('disabled', true);
+              $("#occludeobjectbutton").prop('disabled', true);
+              $("#deleteobjectbutton").prop('disabled',true);
 
               this.player.job.selected = null;
             }
@@ -1005,8 +1039,6 @@ function Journal(start, blowradius)
      */
     this.mark = function(frame, position) 
     {
-        console.log("Marking " + frame);
-
         var newannotations = {};
 
         for (var i in this.annotations)

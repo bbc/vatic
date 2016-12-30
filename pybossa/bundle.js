@@ -305,7 +305,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
                                this.currentcolor[0]);
         for (var i = 1; i < path.length; i++)
         {
-            console.log("Mark " + i + " " + path.length)
             track.journal.mark(path[i][4], convert(path[i]));
         }
 
@@ -315,7 +314,6 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         for (var i = 0; i < attributes.length; i++)
         {
             track.attributejournals[attributes[i][0]].mark(attributes[i][1], attributes[i][2]);
-            console.log("Injecting attribute " + attributes[i][0] + " at frame " + attributes[i][1] + " to " + attributes[i][2]);
         }
 
         obj.statefolddown();
@@ -336,6 +334,16 @@ function TrackObjectUI(button, container, videoframe, job, player, tracks)
         this.drawer.onstopdraw.push(function(position) {
             me.stopdrawing(position);
         });
+    }
+
+    this.getobject = function(id) {
+      for (var i in this.objects) {
+        if(this.objects[i].id == id) {
+          return this.objects[i];
+        }
+      }
+      console.log("Error didn't find object with id " + id);
+      return null;
     }
 
     this.disable = function()
@@ -454,6 +462,24 @@ function TrackObject(job, player, container, color)
               }
             }
             me.track.handle.addClass("ui-selected");
+            $("#hideobjectbutton").prop('disabled', false);
+            $("#occludeobjectbutton").prop('disabled', false);
+            $("#deleteobjectbutton").prop('disabled', false);
+
+            if(me.track.getoutside()) {
+              $("#hideobjectbutton").children().addClass("glyphicon-plus");
+              $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+            } else {
+              $("#hideobjectbutton").children().addClass("glyphicon-remove");
+              $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+            } 
+            if(me.track.getocclusion()) {
+              $("#occludeobjectbutton").children().addClass("glyphicon-eye-close");
+              $("#occludeobjectbutton").children().removeClass("glyphicon-eye-open");
+            } else {
+              $("#occludeobjectbutton").children().addClass("glyphicon-eye-open");
+              $("#occludeobjectbutton").children().removeClass("glyphicon-eye-close");
+            }
         });
 
         this.track.onupdate.push(function() {
@@ -629,7 +655,7 @@ function TrackObject(job, player, container, color)
         }
 
 
-        $("#trackobject" + this.id + "ost").click(function() {
+        $("#trackobject" + this.id + "lost").click(function() {
             me.player.pause();
 
             var outside = $(this).is(":checked");
@@ -653,10 +679,10 @@ function TrackObject(job, player, container, color)
         this.headerdetails.append("<div style='float:right; margin-right: 0.5em'><div class='glyphicon glyphicon-picture' id='trackobject" + this.id + "tooltip' title='Show preview of track'></div></div>");
 
         $("#trackobject" + this.id + "delete").click(function() {
-            if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
-            {
+            /*if (window.confirm("Delete the " + me.job.labels[me.label] + " " + (me.id + 1) + " track? If the object just left the view screen, click the \"Outside of view frame\" check box instead."))
+            {*/
                 me.remove();
-            }
+            /*}*/
         });
 
         $("#trackobject" + this.id + "lock").click(function() {
@@ -1008,7 +1034,7 @@ function ui_build(task, deferred, job)
     var tracks = new TrackCollection(player, job);
     var objectui = new TrackObjectUI($("#newobjectbutton"), $("#objectcontainer"), videoframe, job, player, tracks);
 
-    ui_setupbuttons(job, player, tracks);
+    ui_setupbuttons(job, player, tracks, objectui);
     ui_setupslider(player);
     ui_setupsubmit(task, deferred, job, tracks);
     ui_setupclickskip(job, player, tracks, objectui);
@@ -1037,7 +1063,7 @@ function ui_setup_face_labels(job, tracks, objectui) {
           track.setattribute(attribute, true);
           $("#trackobject" + track.id + "attribute" + attribute).prop('checked', true);
           track.notifyupdate();
-          objectui.objects[object].updateboxtext();
+          objectui.getobject(object).updateboxtext();
         }
       });
     }
@@ -1072,7 +1098,7 @@ function ui_setup(job)
 
 }
 
-function ui_setupbuttons(job, player, tracks)
+function ui_setupbuttons(job, player, tracks, objectui)
 {
     $("#playbutton").click(function() {
         if (!$(this).attr("disabled")) {
@@ -1080,12 +1106,66 @@ function ui_setupbuttons(job, player, tracks)
         }
     });
 
-    $("#rewindbutton").click(function() {
+    $("#rewindstartbutton").click(function() {
         if (ui_disabled) return;
         player.pause();
         player.seek(player.job.start);
     });
 
+    $("#rewindbutton").click(function() {
+        if (ui_disabled) return;
+        player.pause();
+        player.seek(player.frame - job.skip);
+    });
+
+    $("#hideobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          track = tracks.tracks[object];
+          if(track.getoutside()) {
+            track.setoutside(false);
+            $("#trackobject" + track.id + "lost").prop('checked',false);
+            $("#hideobjectbutton").children().addClass("glyphicon-remove");
+            $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+          } else {
+            track.setoutside(true);
+            $("#hideobjectbutton").children().addClass("glyphicon-plus");
+            $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+            $("#trackobject" + track.id + "lost").prop('checked',true);
+          } 
+          track.notifyupdate();
+        }
+    });
+    $("#occludeobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          track = tracks.tracks[object];
+          if(track.getocclusion()) {
+            track.setocclusion(false);
+            $("#trackobject" + track.id + "occluded").prop('checked',false);
+            $("#occludeobjectbutton").children().addClass("glyphicon-eye-open");
+            $("#occludeobjectbutton").children().removeClass("glyphicon-eye-close");
+          } else {
+            track.setocclusion(true);
+            $("#trackobject" + track.id + "occluded").prop('checked',true);
+            $("#occludeobjectbutton").children().removeClass("glyphicon-eye-open");
+            $("#occludeobjectbutton").children().addClass("glyphicon-eye-close");
+          } 
+          track.notifyupdate();
+        }
+    });
+
+    $("#deleteobjectbutton").click(function() {
+      if(job.selected != null) {
+          object = parseInt(job.selected);
+          objectui.getobject(object).remove();
+          job.selected = null;
+          $(".face-label").removeClass("attribute-selected");
+          $("#hideobjectbutton").prop('disabled',true);
+          $("#occludeobjectbutton").prop('disabled',true);
+          $("#deleteobjectbutton").prop('disabled',true);
+      }
+    });
     player.onplay.push(function() {
         $("#playbutton").children().removeClass("glyphicon-play");
         $("#playbutton").children().addClass("glyphicon-pause");
@@ -1104,8 +1184,10 @@ function ui_setupbuttons(job, player, tracks)
         }
 
         if (player.frame == player.job.start) {
+            $("#rewindstartbutton").attr("disabled", true);
             $("#rewindbutton").attr("disabled", true);
         } else if ($("#rewindbutton").attr("disabled")) {
+            $("#rewindstartbutton").removeAttr("disabled");
             $("#rewindbutton").removeAttr("disabled");
         }
     });
@@ -1156,13 +1238,17 @@ function ui_setupkeyboardshortcuts(job, player)
 
         var keycode = e.keyCode ? e.keyCode : e.which;
         
-        if (keycode == 32 || keycode == 112 || keycode == 116 || keycode == 98)
+        if (keycode == 39)
         {
             $("#playbutton").click();
         }
-        if (keycode == 114)
+        if (keycode == 37)
         {
             $("#rewindbutton").click();
+        }
+        if (keycode == 46) 
+        {
+            $("#deleteobjectbutton").click();
         }
         else if (keycode == 110)
         {
@@ -1485,6 +1571,7 @@ function BoxDrawer(container)
      */
     this.click = function(xc, yc)
     {
+      console.log("this.click")
         if (this.enabled)
         {
             if (!this.drawing)
@@ -1618,12 +1705,14 @@ function BoxDrawer(container)
 
     var respondtoclick = function(e) {
         var offset = container.offset();
-        me.click(e.pageX - offset.left, e.pageY - offset.top);
+        console.log("respondtoclick " + offset.left + " " + offset.top + " " + $(window).scrollTop());
+        me.click(e.pageX - offset.left, e.pageY - offset.top - $(window).scrollTop());
     };
 
     var ignoremouseup = false;
 
     container.mousedown(function(e) {
+        console.log("container.mousedown");
         ignoremouseup = true;
         window.setTimeout(function() { 
             ignoremouseup = false;
@@ -1633,6 +1722,7 @@ function BoxDrawer(container)
     });
 
     container.mouseup(function(e) {
+      console.log("container.mouseup");
         if (!ignoremouseup)
         {
             respondtoclick(e);
@@ -1640,6 +1730,7 @@ function BoxDrawer(container)
     });
 
     container.click(function(e) {
+        console.log("container.click");
         e.stopPropagation();
     });
 
@@ -1653,6 +1744,7 @@ function BoxDrawer(container)
     });
 
     $("body").click(function(e) {
+        console.log("body.click")
         me.canceldrawing();
     });
 }
@@ -1966,6 +2058,10 @@ function Track(id, player, color, position)
         }
     }
 
+    this.getocclusion = function() {
+        var pos = this.estimate(this.player.frame);
+        return pos.occluded;
+    }
     /*
      * Sets the current position as occluded.
      */
@@ -1992,6 +2088,10 @@ function Track(id, player, color, position)
         this.draw(this.player.frame, pos);
     }
 
+    this.getoutside = function() {
+        var pos = this.estimate(this.player.frame);
+        return pos.outside;
+    }
     /*
      * Sets the current position as outside.
      */
@@ -2109,7 +2209,23 @@ function Track(id, player, color, position)
         if (this.handle == null)
         {
             this.handle = $('<div class="boundingbox"><div class="boundingboxtext"></div></div>');
-            this.handle.draggable();
+            this.handle.draggable({
+                start: function() {
+                    player.pause();
+                    me.notifystartupdate();
+                    //me.triggerinteract();
+                    for (var i in me.onmouseover)
+                    {
+                        me.onmouseover[i]();
+                    }
+                },
+                stop: function() {
+                    me.fixposition();
+                    me.recordposition();
+                    me.notifyupdate();
+                    me.highlight(false);
+                }
+            });
             this.handle.css("border-color", this.color);
             var fill = $('<div class="fill"></div>').appendTo(this.handle);
             fill.css("background-color", this.color);
@@ -2165,6 +2281,7 @@ function Track(id, player, color, position)
             });
 
             this.handle.click(function() {
+                console.log("handle.click")
                 me.triggerinteract();
             });
         }
@@ -2180,6 +2297,9 @@ function Track(id, player, color, position)
             if(this.player.job.selected == this.id) {
               this.handle.removeClass("ui-selected");
               $(".face-label").removeClass("attribute-selected");
+              $("#hideobjectbutton").prop('disabled', true);
+              $("#occludeobjectbutton").prop('disabled', true);
+              $("#deleteobjectbutton").prop('disabled',true);
 
               this.player.job.selected = null;
             }
@@ -2413,8 +2533,6 @@ function Journal(start, blowradius)
      */
     this.mark = function(frame, position) 
     {
-        console.log("Marking " + frame);
-
         var newannotations = {};
 
         for (var i in this.annotations)
