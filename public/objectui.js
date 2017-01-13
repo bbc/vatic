@@ -270,11 +270,11 @@ function TrackObject(job, player, container, color)
             $("#deleteobjectbutton").prop('disabled', false);
 
             if(me.track.getoutside()) {
-              $("#hideobjectbutton").children().addClass("glyphicon-plus");
-              $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+              //$("#hideobjectbutton").children().addClass("glyphicon-plus");
+              //$("#hideobjectbutton").children().removeClass("glyphicon-remove");
             } else {
-              $("#hideobjectbutton").children().addClass("glyphicon-remove");
-              $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+              //$("#hideobjectbutton").children().addClass("glyphicon-remove");
+              //$("#hideobjectbutton").children().removeClass("glyphicon-plus");
             } 
             if(me.track.getocclusion()) {
               $("#occludeobjectbutton").children().addClass("glyphicon-eye-close");

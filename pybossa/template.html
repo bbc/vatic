@@ -115,7 +115,7 @@ html { overflow: hidden; }
 {
     position : absolute !important;
     border-style : solid;
-    border-width : 2px;
+    border-width : 4px;
     z-index : 5;
 }
 .ui-selected {
@@ -260,9 +260,9 @@ html { overflow: hidden; }
       <td>
         <div id='videoframe'></div>
       </td>
-      <td id='sidebar'>
+      <!--<td id='sidebar'>
         <div id='objectcontainer'></div>
-      </td>
+        </td>-->
     </tr>
   </table>
   <div class="row">
@@ -282,19 +282,20 @@ html { overflow: hidden; }
         <button class='btn' id='newobjectbutton' title="new object / .">
           <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
         </button>
-        <button class='btn' id='occludeobjectbutton' title="toggle occluded" disabled>
+        <!--<button class='btn' id='occludeobjectbutton' title="toggle occluded"
+          disabled>
           <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-        </button>
+          </button>-->
         <button class='btn' id='hideobjectbutton' title="toggle onscreen" disabled>
-          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          <span>Offscreen</span>
         </button>
         <button class='btn' id='deleteobjectbutton' title="delete / Del" disabled>
-          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </button>
       <button id='submitbutton' class='btn btn-primary'>Submit</button>
     </div>
   </div>
-  <div class="row">
+  <!--<div class="row">
     <div class="col-md-12">
       <button class='btn' id='openadvancedoptions'>Display Options</button>
       <div id='advancedoptions' style='display: none;'>
@@ -330,8 +331,8 @@ html { overflow: hidden; }
           </label>
         </div>
       </div>
-    </div>
-  </div>
+      </div>
+      </div>-->
 </div>
 <div id="attributes"></div>
 <div class="hidden" id='preloadpit'></div>

@@ -20,7 +20,7 @@ function ui_setup_face_labels(job, tracks, objectui) {
     container = $("#attributes");
     for (var i in job.attributes[0]) {
       var escapedAttribute = job.attributes[0][i].replace(/ /g, '_') + ".jpg";
-      var html = "<div id=\"face-label-" + i + "\" class=\"face-label\" data-attribute=\"" + i + "\">" + job.attributes[0][i] + "<br/><img src=\"/static/vatic/" + job.slug + "/labels/" + escapedAttribute + "\"></div>";
+      var html = "<div id=\"face-label-" + i + "\" class=\"face-label\" data-attribute=\"" + i + "\">" + job.attributes[0][i] + "<br/><img src=\"/static/vatic/" + job.slug + "/labels/" + job.jobid + "/" + escapedAttribute + "\"></div>";
       
       $(html).appendTo(container).click(function() {
         console.log("Onclick " + $(this).attr('data-attribute') + " " + job.selected);
@@ -52,8 +52,8 @@ function ui_setup(job)
                           "margin": "0 auto"})
                     .parent().css("width", playerwidth + "px");
 
-    $("#sidebar").css({"height": job.height + "px",
-                       "width": "205px"});
+    /*$("#sidebar").css({"height": job.height + "px",
+                       "width": "205px"});*/
 
     $("#annotatescreen").css("width", (playerwidth + 205) + "px");
 
@@ -99,12 +99,12 @@ function ui_setupbuttons(job, player, tracks, objectui)
           if(track.getoutside()) {
             track.setoutside(false);
             $("#trackobject" + track.id + "lost").prop('checked',false);
-            $("#hideobjectbutton").children().addClass("glyphicon-remove");
-            $("#hideobjectbutton").children().removeClass("glyphicon-plus");
+            //$("#hideobjectbutton").children().addClass("glyphicon-remove");
+            //$("#hideobjectbutton").children().removeClass("glyphicon-plus");
           } else {
             track.setoutside(true);
-            $("#hideobjectbutton").children().addClass("glyphicon-plus");
-            $("#hideobjectbutton").children().removeClass("glyphicon-remove");
+            //$("#hideobjectbutton").children().addClass("glyphicon-plus");
+            //$("#hideobjectbutton").children().removeClass("glyphicon-remove");
             $("#trackobject" + track.id + "lost").prop('checked',true);
           } 
           track.notifyupdate();
