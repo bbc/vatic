@@ -12,9 +12,9 @@ function ui_build(task, deferred, job)
     ui_setupslider(player);
     ui_setupsubmit(task, deferred, job, tracks);
     ui_setupclickskip(job, player, tracks, objectui);
-    ui_setupkeyboardshortcuts(job, player);
     ui_loadprevious(job, objectui);
     ui_setup_face_labels(job, tracks, objectui)
+    ui_setupkeyboardshortcuts(job, player);
 }
 function ui_setup_face_labels(job, tracks, objectui) {
     container = $("#attributes");
@@ -201,6 +201,8 @@ function ui_setupbuttons(job, player, tracks, objectui)
 
 function ui_setupkeyboardshortcuts(job, player)
 {
+    var unknown = $("div:contains('Unknown')");
+
     $(window).keypress(function(e) {
         console.log("Key press: " + e.keyCode);
 
@@ -232,6 +234,10 @@ function ui_setupkeyboardshortcuts(job, player)
         {
             $("#annotateoptionshideboxes").click();
         }
+	else if (keycode == 86 || keycode == 117)
+	{ 
+	    unknown.click();
+	}
         else 
         {
             var skip = 0;
