@@ -234,6 +234,10 @@ function ui_setupkeyboardshortcuts(job, player)
         {
             $("#annotateoptionshideboxes").click();
         }
+        if (keycode == 79 || keycode == 111) 
+        {
+            $("#hideobjectbutton").click();
+        }
 	else if (keycode == 86 || keycode == 117)
 	{ 
 	    unknown.click();
