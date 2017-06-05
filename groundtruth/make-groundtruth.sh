@@ -13,7 +13,7 @@ mkdir ${OUTPUT}/${FILE}
 cd ${OUTPUT}/${FILE}/ && ffmpeg -i ${OUTPUT}/${FILE}.mp4 -vf fps=5 -q:v 5 %d.jpg && tar -zcf ${OUTPUT}/${FILE}.tar.gz ./*.jpg
 
 # Detect faces
-/scripts/irfs-face.py ${OUTPUT}/${FILE}.mp4 ${OUTPUT}/${FILE}.faces.json
+/scripts/irfs-face.py --classifier=/models/election2017_v01.pkl ${OUTPUT}/${FILE}.mp4 ${OUTPUT}/${FILE}.faces.json
 
 #Convert them into vatic
 /scripts/face-tracks-to-vatic.py -i ${OUTPUT}/${FILE}.faces.json > ${OUTPUT}/${FILE}.all.json
